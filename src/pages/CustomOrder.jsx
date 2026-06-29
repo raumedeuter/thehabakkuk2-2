@@ -72,13 +72,21 @@ ${formData.description}
     emailjs.send(
       'service_onfv43n',
       'template_uuyjtac',
-      {
+       {
         customer_name: formData.name,
         customer_email: formData.email,
         customer_phone: formData.phone,
         message: customOrderMessage,
         email_subject: `Custom Journal Request from ${formData.name}`,
-      },
+        // Hide order fields
+        order_items: '',
+        delivery_fee: '',
+        order_total: '',
+        payment_status: '',
+        customer_state: '',
+        delivery_option: '',
+        customer_address: '',
+  },
       'M7acGxFDmKQz81172'
     )
     .then(() => {

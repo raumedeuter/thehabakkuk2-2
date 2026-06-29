@@ -57,7 +57,18 @@ function Contact() {
         customer_phone: formData.phone,
         message: formData.message,
         email_subject: `New Enquiry from ${formData.name}`,
-      },
+
+        // Hide order fields
+
+        order_items: '',
+        delivery_fee: '',
+        order_total: '',
+        payment_status: '',
+        customer_state: '',
+        delivery_option: '',
+        customer_address: '',
+
+  },
       'M7acGxFDmKQz81172'
     )
     .then(() => {
