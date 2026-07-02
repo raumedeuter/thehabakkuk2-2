@@ -84,6 +84,42 @@ function Contact() {
   }
 
 
+// const handleSubmit = (e) => {
+//   e.preventDefault()
+
+//   if (!formData.name || !formData.email || !formData.message) {
+//     alert('Please fill in all required fields.')
+//     return
+//   }
+
+//   if (!validate()) return
+
+//   setLoading(true)
+
+//   emailjs.send(
+//     'service_onfv43n',
+//     'template_uuyjtac',
+//     {
+//       email_subject: `New Enquiry from ${formData.name}`,
+//       customer_name: formData.name,
+//       customer_email: formData.email,
+//       customer_phone: formData.phone,
+//       message: formData.message,
+//     },
+//     'M7acGxFDmKQz81172'
+//   )
+//   .then(() => {
+//     setLoading(false)
+//     setSuccess(true)
+//     setFormData({ name: '', email: '', phone: '', message: '' })
+//   })
+//   .catch((error) => {
+//     setLoading(false)
+//     console.error('EmailJS error:', error)
+//     alert('Something went wrong: ' + error.text)
+//   })
+// }
+
   return (
     <div className="bg-brand-cream min-h-screen">
 

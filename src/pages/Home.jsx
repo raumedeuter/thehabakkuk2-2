@@ -1,6 +1,11 @@
+
 import { Link } from 'react-router-dom'
 import products from '../data/products'
 import FloatingHearts from '../components/FloatingHearts'
+// import lifestyleShop2 from '../assets/images/lifestyle-shop.png'
+import lifestyleAbout from '../assets/images/lifestyle-about.png'
+import collections from '../data/collections'
+
 
 function Home() {
   const featured = products.slice(0, 3)
@@ -8,7 +13,8 @@ function Home() {
   return (
     <div>
 
-      {/* ===== HERO SECTION ===== */}
+
+     {/* ===== HERO SECTION ===== */}
       <section className="relative bg-brand-cream px-6 md:px-16 py-16 md:py-28 flex flex-col items-center text-center">
         <FloatingHearts />
      
@@ -47,6 +53,7 @@ function Home() {
             </p>
             <div className="h-px w-16 md:w-32 bg-brand-gold opacity-40 flex-shrink-0"></div>
     </div>
+
 
       {/* ===== FEATURED PRODUCTS SECTION ===== */}
       <section className="bg-brand-cream px-6 md:px-16 py-12 md:py-16">
@@ -97,6 +104,53 @@ function Home() {
         </div>
       </section>
 
+        {/* ===== DIVIDER ===== */}
+<div className="flex items-center justify-center py-8 gap-6">
+  <div className="h-px w-16 md:w-32 bg-brand-gold opacity-40"></div>
+  <p className="text-brand-gold text-xs tracking-widest uppercase">Collections</p>
+  <div className="h-px w-16 md:w-32 bg-brand-gold opacity-40"></div>
+</div>
+
+{/* ===== COLLECTIONS SECTION ===== */}
+<section className="bg-brand-cream px-6 md:px-16 py-12 md:py-16">
+  <h2 className="text-2xl md:text-3xl font-bold text-center text-brand-brown mb-2">
+    Shop by Collection
+  </h2>
+  <p className="text-center text-brand-brown opacity-60 mb-10 text-sm">
+    Every collection tells a story — find the one that speaks to yours.
+  </p>
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
+    {collections.slice(0, 4).map((collection) => (
+      <Link
+        key={collection.id}
+        to={`/collections/${collection.slug}`}
+        className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition group"
+      >
+        <div className="overflow-hidden">
+          <img
+            src={collection.image}
+            alt={collection.name}
+            className="w-full h-36 md:h-48 object-cover group-hover:scale-105 transition duration-500"
+          />
+        </div>
+        <div className="p-3 md:p-4">
+          <h3 className="font-semibold text-brand-brown text-sm md:text-base">
+            {collection.name}
+          </h3>
+        </div>
+      </Link>
+    ))}
+  </div>
+  <div className="text-center mt-8">
+    <Link
+      to="/collections"
+      className="border-2 border-brand-gold text-brand-gold px-8 py-3 rounded-full font-semibold hover:bg-brand-gold hover:text-white transition"
+    >
+      View All Collections
+    </Link>
+  </div>
+</section>
+
       {/* ===== DIVIDER ===== */}
       <div className="flex items-center justify-center py-8 gap-6">
         <div className="h-px w-16 md:w-32 bg-brand-gold opacity-40"></div>
@@ -105,8 +159,8 @@ function Home() {
       </div>
 
       {/* ===== ABOUT SNIPPET SECTION ===== */}
-      <section className="bg-brand-cream px-6 md:px-16 py-12 md:py-20 flex flex-col items-center text-center"
-        style={{
+<section className="bg-brand-cream px-6 md:px-16 py-12 md:py-20"
+ style={{
     backgroundImage: `repeating-linear-gradient(
       transparent,
       transparent 31px,
@@ -115,24 +169,40 @@ function Home() {
     )`,
     backgroundSize: '100% 32px',
   }}>
-        <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-4">
-          Our Story
-        </p>
-        <h2 className="text-2xl md:text-3xl font-bold text-brand-brown mb-4">
-          Pages Made For Pouring
-        </h2>
-        <p className="text-brand-brown opacity-70 max-w-xl mb-8 leading-relaxed text-sm md:text-base">
-          Discover pages made for pouring your thoughts, ideas and prayers.
-          Find the beauty in writing in every journal — crafted for reflection,
-          gratitude, and intentional living. Write the vision. Make it plain.
-        </p>
-        <Link
-          to="/about"
-          className="border-2 border-brand-green text-brand-green px-8 py-3 rounded-full font-semibold hover:bg-brand-green hover:text-white transition"
-        >
-          Our Story
-        </Link>
-      </section>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center max-w-6xl mx-auto">
+
+    {/* Image */}
+    <div className="rounded-3xl overflow-hidden shadow-sm">
+      <img
+        src={lifestyleAbout}
+        alt="Journaling lifestyle"
+        className="w-full h-72 md:h-full object-cover"
+      />
+    </div>
+
+    {/* Text Content */}
+    <div className="flex flex-col items-start text-left">
+      <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-4">
+        Our Story
+      </p>
+      <h2 className="text-2xl md:text-3xl font-bold text-brand-brown mb-4">
+        Pages Made For Pouring
+      </h2>
+      <p className="text-brand-brown opacity-70 mb-8 leading-relaxed text-sm md:text-base">
+        Discover pages made for pouring your thoughts, ideas and prayers.
+        Find the beauty in writing in every journal — crafted for reflection,
+        gratitude, and intentional living. Write the vision. Make it plain.
+      </p>
+      <Link
+        to="/about"
+        className="border-2 border-brand-green text-brand-green px-8 py-3 rounded-full font-semibold hover:bg-brand-green hover:text-white transition"
+      >
+        Our Story
+      </Link>
+    </div>
+
+  </div>
+</section>
 
       {/* ===== DIVIDER ===== */}
       <div className="flex items-center justify-center py-8 gap-6">
@@ -152,7 +222,7 @@ function Home() {
           </h2>
           <p className="text-brand-brown opacity-70 max-w-2xl mx-auto mb-8 leading-relaxed text-sm md:text-base">
             Can't find exactly what you're looking for? Tell us your vision
-            and we'll bring it to life — a journal made just for you.
+            and we'll bring it to life — a journal designed just for you.
           </p>
           <Link
             to="/custom-order"

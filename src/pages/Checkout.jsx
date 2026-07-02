@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useCart } from '../context/CartContext'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ShoppingBag } from 'lucide-react'
-import emailjs from '@emailjs/browser'
 import deliveryData from '../data/delivery'
 import Spinner from '../components/Spinner'
 
 function Checkout() {
   const { cart, cartTotal, clearCart } = useCart()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,7 +18,6 @@ function Checkout() {
     note: '',
   })
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
 
   const deliveryFee = formData.state ? deliveryData[formData.state] : 0
   const orderTotal = cartTotal + deliveryFee
@@ -27,7 +26,21 @@ function Checkout() {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const sendOrderEmail = () => {
+  const validate = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      alert('Please enter a valid email address.')
+      return false
+    }
+    const phoneRegex = /^0[0-9]{10}$/
+    if (formData.phone && !phoneRegex.test(formData.phone)) {
+      alert('Please enter a valid Nigerian phone number e.g. 08012345678')
+      return false
+    }
+    return true
+  }
+
+  const buildOrderDetails = () => {
     const orderItemsHTML = cart
       .map(
         (item) =>
@@ -41,7 +54,8 @@ function Checkout() {
       )
       .join('')
 
-    const emailData = {
+    return {
+      email_subject: `New Order from ${formData.name}`,
       customer_name: formData.name,
       customer_email: formData.email,
       customer_phone: formData.phone,
@@ -52,34 +66,11 @@ function Checkout() {
       delivery_fee: `₦${deliveryFee.toLocaleString()}`,
       order_total: `₦${orderTotal.toLocaleString()}`,
       payment_status: 'Paid via Paystack',
-      email_subject: `New Order from ${formData.name}`,
+      message: '',
     }
-
-    return Promise.all([
-      emailjs.send('service_onfv43n', 'template_uuyjtac', emailData, 'M7acGxFDmKQz81172'),
-      emailjs.send('service_onfv43n', 'template_91idbjl', emailData, 'M7acGxFDmKQz81172'),
-    ])
   }
 
-  const validate = () => {
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(formData.email)) {
-    alert('Please enter a valid email address.')
-    return false
-  }
-
-  // Phone validation — Nigerian numbers (11 digits starting with 0)
-  const phoneRegex = /^0[0-9]{10}$/
-  if (formData.phone && !phoneRegex.test(formData.phone)) {
-    alert('Please enter a valid Nigerian phone number e.g. 08012345678')
-    return false
-  }
-
-  return true
-}
-
-  const handlePayment = (e) => {
+  const handlePayment = async (e) => {
     e.preventDefault()
 
     if (!formData.name || !formData.email || !formData.phone || !formData.state) {
@@ -96,50 +87,81 @@ function Checkout() {
 
     setLoading(true)
 
-    sendOrderEmail()
-      .then(() => {
-        setLoading(false)
-        setSuccess(true)
-        clearCart()
+    try {
+      // Step 1 — Initialize payment on our secure backend
+      const initResponse = await fetch('/api/initialize-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cart: cart.map((item) => ({ id: item.id, quantity: item.quantity })),
+          deliveryState: formData.state,
+          email: formData.email,
+        }),
       })
-      .catch((error) => {
-        setLoading(false)
-        console.error('EmailJS error:', error)
-        alert('Something went wrong. Please try again.')
-      })
-  }
 
-  if (success) {
-    return (
-      <div className="bg-brand-cream min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-16 py-24">
-        <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-4">
-          Order Confirmed
-        </p>
-        <h2 className="text-2xl md:text-3xl font-bold text-brand-brown mb-4">
-          Thank You {formData.name}!
-        </h2>
-        <p className="text-brand-brown opacity-70 max-w-md mx-auto mb-4 text-sm md:text-base">
-          Your order has been received and we will be in touch shortly
-          to confirm your delivery details.
-        </p>
-        <div className="bg-white rounded-2xl px-6 py-4 max-w-md mx-auto mb-8 text-sm border border-brand-gold border-opacity-20">
-          <p className="font-semibold text-brand-brown mb-1">
-            Check your email for a confirmation!
-          </p>
-          <p className="text-brand-brown opacity-60">
-            If you don't see it please check your{' '}
-            <span className="font-semibold">spam or junk folder</span> and
-            mark it as not spam.
-          </p>
-        </div>
-        <Link
-          to="/shop"
-          className="bg-brand-green text-white px-8 py-3 rounded-full font-semibold hover:bg-brand-green-dark transition"
-        >
-          Continue Shopping
-        </Link>
-      </div>
-    )
+      const initData = await initResponse.json()
+
+      if (!initResponse.ok) {
+        alert(initData.error || 'Could not initialize payment. Please try again.')
+        setLoading(false)
+        return
+      }
+
+      const { reference, amount } = initData
+
+      // Step 2 — Open Paystack popup
+      const PaystackPop = (await import('@paystack/inline-js')).default
+      const paystack = new PaystackPop()
+
+      paystack.newTransaction({
+        key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+        email: formData.email,
+        amount: amount * 100,
+        ref: reference,
+        onSuccess: async (transaction) => {
+          // Step 3 — Verify payment on our secure backend
+          try {
+            const verifyResponse = await fetch('/api/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                reference: transaction.reference,
+                cart: cart.map((item) => ({ id: item.id, quantity: item.quantity })),
+                deliveryState: formData.state,
+                orderDetails: buildOrderDetails(),
+              }),
+            })
+
+            const verifyData = await verifyResponse.json()
+
+            if (!verifyResponse.ok) {
+              alert(verifyData.error || 'Payment verification failed. Please contact us.')
+              setLoading(false)
+              return
+            }
+
+            // Step 4 — Success!
+            clearCart()
+            navigate('/order-success', {
+              state: { name: formData.name }
+            })
+
+          } catch (error) {
+            console.error('Verification error:', error)
+            alert('Something went wrong verifying your payment. Please contact us.')
+            setLoading(false)
+          }
+        },
+        onCancel: () => {
+          setLoading(false)
+        },
+      })
+
+    } catch (error) {
+      console.error('Payment error:', error)
+      alert('Something went wrong. Please try again.')
+      setLoading(false)
+    }
   }
 
   if (cart.length === 0) {
@@ -193,9 +215,7 @@ function Checkout() {
 
           {/* Name */}
           <div className="mb-5 md:mb-6">
-            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
-              Full Name
-            </label>
+            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">Full Name</label>
             <input
               type="text"
               name="name"
@@ -208,9 +228,7 @@ function Checkout() {
 
           {/* Email */}
           <div className="mb-5 md:mb-6">
-            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
-              Email Address
-            </label>
+            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">Email Address</label>
             <input
               type="email"
               name="email"
@@ -223,9 +241,7 @@ function Checkout() {
 
           {/* Phone */}
           <div className="mb-5 md:mb-6">
-            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
-              Phone Number
-            </label>
+            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">Phone Number</label>
             <input
               type="tel"
               name="phone"
@@ -238,9 +254,7 @@ function Checkout() {
 
           {/* State Dropdown */}
           <div className="mb-5 md:mb-6">
-            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
-              Select Your State
-            </label>
+            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">Select Your State</label>
             <select
               name="state"
               value={formData.state}
@@ -285,9 +299,7 @@ function Checkout() {
                     onChange={handleChange}
                     className="accent-brand-green"
                   />
-                  <span className="text-brand-brown text-sm md:text-base">
-                    Home delivery
-                  </span>
+                  <span className="text-brand-brown text-sm md:text-base">Home delivery</span>
                 </label>
               </div>
             </div>
@@ -327,23 +339,23 @@ function Checkout() {
           </div>
 
           {/* Pay Button */}
-         <button
+          <button
             onClick={handlePayment}
             disabled={loading}
             className="w-full bg-brand-green text-white py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-brand-green-dark transition disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
-            >
+          >
             {loading ? (
-                <>
+              <>
                 <Spinner />
                 Processing...
-                </>
+              </>
             ) : (
-                <>
+              <>
                 <ShoppingBag className="w-5 h-5" />
                 Pay ₦{orderTotal.toLocaleString()}
-                </>
+              </>
             )}
-        </button>
+          </button>
 
         </div>
 

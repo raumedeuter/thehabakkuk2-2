@@ -34,6 +34,7 @@ function Footer() {
           <ul className="flex flex-col gap-2 text-sm text-brand-brown">
             {/* <li><Link to="/" className="hover:text-brand-green transition opacity-70">Home</Link></li> */}
             <li><Link to="/shop" className="hover:text-brand-green transition opacity-70">Shop</Link></li>
+            <li><Link to="/collections" className="hover:text-brand-green transition opacity-70">Collections</Link></li>
             <li><Link to="/custom-order" className="hover:text-brand-green transition opacity-70">Custom Journal</Link></li>
             {/* <li><Link to="/about" className="hover:text-brand-green transition opacity-70">About</Link></li> */}
             <li><Link to="/contact" className="hover:text-brand-green transition opacity-70">Contact</Link></li>

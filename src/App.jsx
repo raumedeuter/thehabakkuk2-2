@@ -11,6 +11,10 @@ import Checkout from './pages/Checkout'
 import CustomOrder from './pages/CustomOrder'
 import ScrollToTop from './components/ScrollToTop'
 import NotFound from './pages/NotFound'
+import OrderSuccess from './pages/OrderSuccess'
+import Collections from './pages/Collections'
+import CollectionDetail from './pages/CollectionDetail'
+
 
 function App() {
   return (
@@ -29,6 +33,9 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/custom-order" element={<CustomOrder />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/order-success" element={<OrderSuccess />} />
+            <Route path="/collections" element={<Collections />} />
+            <Route path="/collections/:slug" element={<CollectionDetail />} />
           </Routes>
         </main>
         <Footer />

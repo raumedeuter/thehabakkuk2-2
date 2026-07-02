@@ -1,4 +1,5 @@
 import { PenLine, Heart, Star } from 'lucide-react'
+import lifestyleHero from '../assets/images/lifestyle-hero.png'
 
 function About() {
   return (
@@ -24,31 +25,45 @@ function About() {
       </div>
 
       {/* ===== MISSION SECTION ===== */}
-      <section className="bg-brand-cream px-6 md:px-16 py-12 md:py-20">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-4">
-            Our Mission
-          </p>
-          <h2 className="text-2xl md:text-3xl font-bold text-brand-brown mb-6">
-            Why We Exist
-          </h2>
-          <p className="text-brand-brown opacity-70 leading-relaxed mb-4 text-sm md:text-base">
-            At TheHabakkuk2&#58;2, we believe every person carries a vision
-            worth writing down. Habakkuk 2:2 says —{' '}
-            <span className="text-brand-green font-semibold italic">
-              "Write the vision and make it plain."
-            </span>{' '}
-            That is exactly what we exist to help you do.
-          </p>
-          <p className="text-brand-brown opacity-70 leading-relaxed text-sm md:text-base">
-            Our journals are more than just notebooks — they are tools for
-            clarity, gratitude, prayer, and intentional living. Premium faux
-            leather write-kits crafted for reflection and beauty in your
-            quiet moments. Whether you are a student, a professional, or
-            someone on a faith journey, there is a journal here for you.
-          </p>
-        </div>
-      </section>
+<section className="bg-brand-cream px-6 md:px-16 py-12 md:py-20">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center max-w-6xl mx-auto">
+
+    {/* Text Content */}
+    <div className="flex flex-col items-start text-left justify-center min-h-[500px]">
+      <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-4">
+        Our Mission
+      </p>
+      <h2 className="text-2xl md:text-3xl font-bold text-brand-brown mb-6">
+        Why We Exist
+      </h2>
+      <p className="text-brand-brown opacity-70 leading-relaxed mb-4 text-sm md:text-base">
+        At TheHabakkuk2&#58;2, we believe every person carries a vision
+        worth writing down. Habakkuk 2:2 says —{' '}
+        <span className="text-brand-green font-semibold italic">
+          "Write the vision and make it plain."
+        </span>{' '}
+        That is exactly what we exist to help you do.
+      </p>
+      <p className="text-brand-brown opacity-70 leading-relaxed text-sm md:text-base">
+        Our journals are more than just notebooks — they are tools for
+        clarity, gratitude, prayer, and intentional living. Premium faux
+        leather write-kits crafted for reflection and beauty in your
+        quiet moments. Whether you are a student, a professional, or
+        someone on a faith journey, there is a journal here for you.
+      </p>
+    </div>
+
+    {/* Image */}
+    <div className="rounded-3xl overflow-hidden shadow-sm">
+      <img
+        src={lifestyleHero}
+        alt="Journaling lifestyle"
+        className="w-full h-72 md:h-[500px] object-cover"
+      />
+    </div>
+
+  </div>
+</section>
 
       {/* ===== DIVIDER ===== */}
       <div className="flex justify-center py-4 px-6">
