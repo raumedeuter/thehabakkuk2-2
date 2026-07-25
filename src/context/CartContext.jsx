@@ -4,6 +4,7 @@ const CartContext = createContext()
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([])
+  const [cartUpdated, setCartUpdated] = useState(false)
 
   // Add item to cart
   const addToCart = (product, quantity) => {
@@ -20,6 +21,9 @@ export function CartProvider({ children }) {
       // Otherwise add it as a new item
       return [...prevCart, { ...product, quantity }]
     })
+      // Trigger toast
+  setCartUpdated(true)
+  setTimeout(() => setCartUpdated(false), 2000)
   }
 
   // Remove item from cart
@@ -58,6 +62,7 @@ export function CartProvider({ children }) {
       clearCart,
       cartCount,
       cartTotal,
+      cartUpdated
     }}>
       {children}
     </CartContext.Provider>

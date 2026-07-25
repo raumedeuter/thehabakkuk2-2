@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ShoppingCart, Menu, X } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import CartToast from './CartToast'
 
 function Navbar() {
-  const { cartCount } = useCart()
+  const { cartCount, cartUpdated } = useCart()
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
@@ -24,35 +25,41 @@ function Navbar() {
           <li><Link to="/shop" className="text-brand-brown hover:text-brand-green transition">Shop</Link></li>
           <li><Link to="/about" className="text-brand-brown hover:text-brand-green transition">About</Link></li>
           <li><Link to="/contact" className="text-brand-brown hover:text-brand-green transition">Contact</Link></li>
-          <li>
-            <Link to="/cart" className="relative flex items-center text-brand-brown hover:text-brand-green transition">
-              <ShoppingCart className="w-6 h-6" />
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-brand-gold text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
-          </li>
+         <li>
+  <div className="relative">
+    <Link to="/cart" className="relative flex items-center text-brand-brown hover:text-brand-green transition">
+      <ShoppingCart className="w-6 h-6" />
+      {cartCount > 0 && (
+        <span className="absolute -top-2 -right-2 bg-brand-gold text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+          {cartCount}
+        </span>
+      )}
+    </Link>
+    <CartToast show={cartUpdated} />
+  </div>
+</li>
         </ul>
 
-        {/* Mobile — Cart + Hamburger */}
-        <div className="flex items-center gap-4 md:hidden">
-          <Link to="/cart" className="relative flex items-center text-brand-brown hover:text-brand-green transition">
-            <ShoppingCart className="w-6 h-6" />
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-brand-gold text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                {cartCount}
-              </span>
-            )}
-          </Link>
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-brand-brown hover:text-brand-green transition"
-          >
-            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
+      {/* Mobile — Cart + Hamburger */}
+<div className="flex items-center gap-4 md:hidden">
+  <div className="relative">
+    <Link to="/cart" className="relative flex items-center text-brand-brown hover:text-brand-green transition">
+      <ShoppingCart className="w-6 h-6" />
+      {cartCount > 0 && (
+        <span className="absolute -top-2 -right-2 bg-brand-gold text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+          {cartCount}
+        </span>
+      )}
+    </Link>
+    <CartToast show={cartUpdated} />
+  </div>
+  <button
+    onClick={() => setMenuOpen(!menuOpen)}
+    className="text-brand-brown hover:text-brand-green transition"
+  >
+    {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+  </button>
+</div>
 
       </div>
 

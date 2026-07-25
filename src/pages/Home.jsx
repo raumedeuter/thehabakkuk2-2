@@ -3,7 +3,7 @@ import products from "../data/products";
 import FloatingHearts from "../components/FloatingHearts";
 // import lifestyleShop2 from '../assets/images/lifestyle-shop.png'
 import lifestyleAbout from "../assets/images/lifestyle-about.png";
-import collections from "../data/collections";
+// import collections from "../data/collections";
 
 function Home() {
   const featured = products.slice(0, 3);
@@ -18,11 +18,12 @@ function Home() {
           a write-kit shop
         </p>
         <h1 className="text-3xl md:text-4xl font-bold text-brand-brown mb-6 max-w-4xl leading-tight">
-          Write Your Vision. Make It Plain.
+          Write It! Make It Plain.
         </h1>
         <p className="text-brand-brown opacity-70 text-sm md:text-base max-w-2xl mb-10">
-          Browse our collection of premium faux leather journals crafted for
-          reflection, gratitude and intentional living. Find yours today.
+          Discover pages made for pouring your thoughts, ideas and prayers.
+          Crafted for stillness, reflection, and overall intentional living.
+          Find yours today.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
           <Link
@@ -64,11 +65,24 @@ function Home() {
               className="bg-white shadow-sm rounded-2xl overflow-hidden hover:shadow-md transition group"
             >
               <div className="overflow-hidden">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-56 object-cover group-hover:scale-105 transition duration-500"
-                />
+                {(() => {
+                  const defaultVariant = product.variants.find(
+                    (v) => v.slug === product.defaultVariant,
+                  );
+                  return defaultVariant?.image ? (
+                    <img
+                      src={defaultVariant.image}
+                      alt={product.name}
+                      className="w-full h-56 object-contain group-hover:scale-105 transition duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-56 bg-brand-cream flex items-center justify-center">
+                      <p className="text-brand-brown opacity-40 text-xs">
+                        Coming Soon
+                      </p>
+                    </div>
+                  );
+                })()}
               </div>
               <div className="p-5">
                 <p className="text-xs text-brand-gold font-semibold uppercase tracking-wider mb-1">
@@ -98,55 +112,6 @@ function Home() {
             className="border-2 border-brand-green text-brand-green px-8 py-3 rounded-full font-semibold hover:bg-brand-green hover:text-white transition"
           >
             View All Journals
-          </Link>
-        </div>
-      </section>
-
-      {/* ===== DIVIDER ===== */}
-      <div className="flex items-center justify-center py-8 gap-6">
-        <div className="h-px w-16 md:w-32 bg-brand-gold opacity-40"></div>
-        <p className="text-brand-gold text-xs tracking-widest uppercase">
-          Collections
-        </p>
-        <div className="h-px w-16 md:w-32 bg-brand-gold opacity-40"></div>
-      </div>
-
-      {/* ===== COLLECTIONS SECTION ===== */}
-      <section className="bg-brand-cream px-6 md:px-16 py-12 md:py-16">
-        <h2 className="text-2xl md:text-3xl font-bold text-center text-brand-brown mb-2">
-          Shop by Collection
-        </h2>
-        <p className="text-center text-brand-brown opacity-60 mb-10 text-sm">
-          Every collection tells a story — find the one that speaks to yours.
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
-          {collections.slice(0, 4).map((collection) => (
-            <Link
-              key={collection.id}
-              to={`/collections/${collection.slug}`}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition group"
-            >
-              <div className="overflow-hidden">
-                <img
-                  src={collection.image}
-                  alt={collection.name}
-                  className="w-full h-36 md:h-48 object-cover group-hover:scale-105 transition duration-500"
-                />
-              </div>
-              <div className="p-3 md:p-4">
-                <h3 className="font-semibold text-brand-brown text-sm md:text-base">
-                  {collection.name}
-                </h3>
-              </div>
-            </Link>
-          ))}
-        </div>
-        <div className="text-center mt-8">
-          <Link
-            to="/collections"
-            className="border-2 border-brand-gold text-brand-gold px-8 py-3 rounded-full font-semibold hover:bg-brand-gold hover:text-white transition"
-          >
-            View All Collections
           </Link>
         </div>
       </section>
@@ -191,9 +156,9 @@ function Home() {
             </h2>
             <p className="text-brand-brown opacity-70 mb-8 leading-relaxed text-sm md:text-base">
               Discover pages made for pouring your thoughts, ideas and prayers.
-              Find the beauty in writing in every journal — crafted for
-              reflection, gratitude, and intentional living. Write the vision.
-              Make it plain.
+              Find the beauty in writing in every journal. Crafted for
+              stillness, reflection, and overall intentional living. Write the
+              vision. Make it plain.
             </p>
             <Link
               to="/about"
@@ -204,6 +169,53 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* ===== DIVIDER ===== */}
+      {/* <div className="flex items-center justify-center py-8 gap-6">
+        <div className="h-px w-16 md:w-32 bg-brand-gold opacity-40"></div>
+        <p className="text-brand-gold text-xs tracking-widest uppercase">Collections</p>
+        <div className="h-px w-16 md:w-32 bg-brand-gold opacity-40"></div>
+      </div>
+
+           {/* ===== COLLECTIONS SECTION ===== */}
+      {/* <section className="bg-brand-cream px-6 md:px-16 py-12 md:py-16">
+        <h2 className="text-2xl md:text-3xl font-bold text-center text-brand-brown mb-2">
+          Shop by Collection
+        </h2>
+        <p className="text-center text-brand-brown opacity-60 mb-10 text-sm">
+          Every collection tells a story — find the one that speaks to yours.
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
+          {collections.slice(0, 4).map((collection) => (
+            <Link
+              key={collection.id}
+              to={`/collections/${collection.slug}`}
+              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition group"
+            >
+              <div className="overflow-hidden">
+                <img
+                  src={collection.image}
+                  alt={collection.name}
+                  className="w-full h-36 md:h-48 object-cover group-hover:scale-105 transition duration-500"
+                />
+              </div>
+              <div className="p-3 md:p-4">
+                <h3 className="font-semibold text-brand-brown text-sm md:text-base">
+                  {collection.name}
+                </h3>
+              </div>
+            </Link>
+          ))}
+        </div>
+        <div className="text-center mt-8">
+          <Link
+            to="/collections"
+            className="border-2 border-brand-gold text-brand-gold px-8 py-3 rounded-full font-semibold hover:bg-brand-gold hover:text-white transition"
+          >
+            View All Collections
+          </Link>
+        </div>
+      </section> */}
 
       {/* ===== DIVIDER ===== */}
       <div className="flex items-center justify-center py-8 gap-6">

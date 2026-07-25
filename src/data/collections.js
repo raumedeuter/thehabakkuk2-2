@@ -41,8 +41,8 @@ const collections = [
   },
   {
     id: 5,
-    name: "Axis Collection",
-    slug: "axis",
+    name: "Y-Axis Collection",
+    slug: "y-axis",
     image: collectionAxis,
     description: "Y-strap panel journals with a stunning 2-tone panel design. Bold, structured and made for the writer who moves with intention.",
   },

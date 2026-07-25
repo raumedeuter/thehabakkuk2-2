@@ -1,23 +1,24 @@
 // Product prices in Naira — update here when prices change
 export const products = {
-  1: 5000,  // Cobalt Elastic Strap
-  2: 5000,  // Red Elastic Strap
-  3: 6000,  // Ridge Teal
-  4: 6000,  // Ridge Bronze
-  5: 6000,  // Ridge Onyx
-  6: 6000,  // Ridge Scarlet
-  7: 6000,  // Ridge Navy
-  8: 6000,  // Orbit Onyx
-  9: 6000,  // Orbit Scarlet
-  10: 6000, // Orbit Navy
-  11: 6000, // Orbit Bronze
-  12: 6000, // Orbit Pine
+  1: 6000,  // Loom Journal
+  2: 7000,  // Ridge Journal Gift Set
+  3: 6000,  // Y-Axis Journal
+  4: 5000,  // Elastic Strap Journal
+  5: 6000,  // Ridge Journal
+  6: 6000,  // Orbit Journal Gift Set
+  7: 6000,  // Horizon Journal
+  8: 6000,  // Frame Journal
+  9: 6000,  // Slate Journal
+  10: 6000, // Archive Journal
+  11: 6000, // Steady Suede Journal
+  12: 6000, // Grain Journal Gift Set
+
 }
 
 // Delivery fees per Nigerian state in Naira — update here when logistics pricing changes
 export const deliveryFees = {
   "Abia": 5000, "Adamawa": 7000, "Akwa Ibom": 7000, "Anambra": 7000,
-  "Bauchi": 7000, "Bayelsa": 7500, "Benue": 7000, "Borno": 7000,
+  "Bauchi": 7000, "Bayelsa": 7000, "Benue": 7000, "Borno": 7000,
   "Cross River": 7000, "Delta": 7000, "Ebonyi": 7000, "Edo": 7000,
   "Ekiti": 7000, "Enugu": 7000, "FCT Abuja": 7000, "Gombe": 7000,
   "Imo": 7000, "Jigawa": 7000, "Kaduna": 7000, "Kano": 7000,

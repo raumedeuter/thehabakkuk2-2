@@ -9,7 +9,7 @@ function CustomOrder() {
     email: '',
     phone: '',
     size: '',
-    cover: '',
+    // cover: '',
     color: '',
     pages: '',
     quantity: '',
@@ -97,7 +97,7 @@ ${formData.description}
         email: '',
         phone: '',
         size: '',
-        cover: '',
+        // cover: '',
         color: '',
         pages: '',
         quantity: '',
@@ -219,15 +219,16 @@ ${formData.description}
               className="w-full border border-brand-gold border-opacity-20 rounded-xl px-4 py-3 text-brand-brown bg-brand-cream focus:outline-none focus:border-brand-gold text-sm md:text-base"
             >
               <option value="">-- Select a size --</option>
-              <option value="A4">A4</option>
-              <option value="A5">A5</option>
+              <option value="A4">A4 (Big)</option>
+              <option value="A5">A5 (Medium)</option>
+              <option value="B6">B6 (Small)</option>
               <option value="Pocket Size">Pocket Size</option>
               <option value="Not Sure">Not Sure</option>
             </select>
           </div>
 
           {/* Cover Type */}
-          <div className="mb-5 md:mb-6">
+          {/* <div className="mb-5 md:mb-6">
             <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
               Cover Type{' '}
               <span className="text-brand-brown opacity-40 font-normal">(optional)</span>
@@ -243,7 +244,7 @@ ${formData.description}
               <option value="Softcover">Softcover</option>
               <option value="Not Sure">Not Sure</option>
             </select>
-          </div>
+          </div> */}
 
           {/* Color/Theme */}
           <div className="mb-5 md:mb-6">
@@ -272,7 +273,7 @@ ${formData.description}
               name="pages"
               value={formData.pages}
               onChange={handleChange}
-              placeholder="e.g. 100, 200, 300..."
+              placeholder="e.g. 100, 200..."
               min="1"
               className="w-full border border-brand-gold border-opacity-20 rounded-xl px-4 py-3 text-brand-brown bg-brand-cream focus:outline-none focus:border-brand-gold text-sm md:text-base"
             />

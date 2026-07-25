@@ -23,14 +23,13 @@ function CollectionDetail() {
 
   return (
     <div className="bg-brand-cream min-h-screen">
-
       {/* ===== HERO SECTION ===== */}
       <section
         className="relative px-6 md:px-16 min-h-[300px] md:min-h-[400px] flex flex-col items-center justify-end overflow-hidden"
         style={{
           backgroundImage: `url(${collection.image})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         {/* Overlay */}
@@ -70,7 +69,41 @@ function CollectionDetail() {
                 key={product.id}
                 className="bg-white shadow-sm rounded-2xl overflow-hidden hover:shadow-md transition group"
               >
-                <div className="overflow-hidden">
+
+                {/* Product Card */}
+
+                 {/* Image with Out of Stock badge */}
+              <div className="overflow-hidden relative">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-36 md:h-56 object-cover group-hover:scale-105 transition duration-500"
+                />
+                {!product.inStock && (
+                  <div className="absolute top-3 left-3 bg-brand-brown text-white text-xs font-semibold px-3 py-1 rounded-full opacity-80">
+                    Out of Stock
+                  </div>
+                )}
+              </div>
+              <div className="p-3 md:p-5">
+                <p className="text-xs text-brand-gold font-semibold uppercase tracking-wider mb-1 hidden md:block">
+                  {product.collection}
+                </p>
+                <h3 className="font-semibold text-brand-brown text-sm md:text-base">
+                  {product.name}
+                </h3>
+                <div className="flex items-center justify-between mt-3 md:mt-4">
+                  <span className="text-brand-green font-bold text-sm">
+                    {product.price}
+                  </span>
+                  <Link
+                    to={`/shop/${product.id}`}
+                    className="bg-brand-green text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-full hover:bg-brand-green-dark transition"
+                  >
+                    View
+                  </Link>
+                </div>
+                {/* <div className="overflow-hidden">
                   <img
                     src={product.image}
                     alt={product.name}
@@ -82,14 +115,22 @@ function CollectionDetail() {
                     {product.name}
                   </h3>
                   <div className="flex items-center justify-between mt-3 md:mt-4">
-                    <span className="text-brand-green font-bold text-sm">{product.price}</span>
-                    <Link
-                      to={`/shop/${product.id}`}
-                      className="bg-brand-green text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-full hover:bg-brand-green-dark transition"
-                    >
-                      View
-                    </Link>
-                  </div>
+                    <span className="text-brand-green font-bold text-sm">
+                      {product.price}
+                    </span>
+                    {product.inStock ? (
+                      <Link
+                        to={`/shop/${product.id}`}
+                        className="bg-brand-green text-white text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-full hover:bg-brand-green-dark transition"
+                      >
+                        View
+                      </Link>
+                    ) : (
+                      <span className="text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-brand-cream text-brand-brown opacity-50 border border-brand-gold border-opacity-20">
+                        Out of Stock
+                      </span>
+                    )}
+                  </div> */}
                 </div>
               </div>
             ))}
@@ -108,9 +149,8 @@ function CollectionDetail() {
           </div>
         )}
       </section>
-
     </div>
-  )
+  );
 }
 
 export default CollectionDetail
