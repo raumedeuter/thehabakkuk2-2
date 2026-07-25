@@ -57,7 +57,7 @@ function ProductDetail() {
             <img
               src={selectedVariant.image}
               alt={`${product.name} — ${selectedVariant.color}`}
-              className="w-full h-64 md:h-full object-cover transition duration-300"
+              className="w-full h-64 md:h-full object-contain transition duration-300"
             />
           ) : (
             <div className="w-full h-64 md:h-96 bg-brand-cream flex items-center justify-center rounded-3xl">
