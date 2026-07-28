@@ -1,44 +1,44 @@
-import { useState } from 'react'
-import { useCart } from '../context/CartContext'
-import { Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, ShoppingBag } from 'lucide-react'
-import deliveryData from '../data/delivery'
-import Spinner from '../components/Spinner'
+import { useState } from "react";
+import { useCart } from "../context/CartContext";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, ShoppingBag } from "lucide-react";
+import deliveryData from "../data/delivery";
+import Spinner from "../components/Spinner";
 
 function Checkout() {
-  const { cart, cartTotal, clearCart } = useCart()
-  const navigate = useNavigate()
+  const { cart, cartTotal, clearCart } = useCart();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    state: '',
-    deliveryOption: 'pickup',
-    address: '',
-    note: '',
-  })
-  const [loading, setLoading] = useState(false)
+    name: "",
+    email: "",
+    phone: "",
+    state: "",
+    deliveryOption: "pickup",
+    address: "",
+    note: "",
+  });
+  const [loading, setLoading] = useState(false);
 
-  const deliveryFee = formData.state ? deliveryData[formData.state] : 0
-  const orderTotal = cartTotal + deliveryFee
+  const deliveryFee = formData.state ? deliveryData[formData.state] : 0;
+  const orderTotal = cartTotal + deliveryFee;
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const validate = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      alert('Please enter a valid email address.')
-      return false
+      alert("Please enter a valid email address.");
+      return false;
     }
-    const phoneRegex = /^0[0-9]{10}$/
+    const phoneRegex = /^0[0-9]{10}$/;
     if (formData.phone && !phoneRegex.test(formData.phone)) {
-      alert('Please enter a valid Nigerian phone number e.g. 08012345678')
-      return false
+      alert("Please enter a valid Nigerian phone number e.g. 08012345678");
+      return false;
     }
-    return true
-  }
+    return true;
+  };
 
   const buildOrderDetails = () => {
     const orderItemsHTML = cart
@@ -48,11 +48,11 @@ function Checkout() {
             <td style="padding: 8px; border: 1px solid #e5e7eb;">${item.name}</td>
             <td style="padding: 8px; border: 1px solid #e5e7eb;">${item.quantity}</td>
             <td style="padding: 8px; border: 1px solid #e5e7eb;">₦${(
-              parseInt(item.price.replace(/[^0-9]/g, '')) * item.quantity
+              parseInt(item.price.replace(/[^0-9]/g, "")) * item.quantity
             ).toLocaleString()}</td>
-          </tr>`
+          </tr>`,
       )
-      .join('')
+      .join("");
 
     return {
       email_subject: `New Order from ${formData.name}`,
@@ -60,58 +60,72 @@ function Checkout() {
       customer_email: formData.email,
       customer_phone: formData.phone,
       customer_state: formData.state,
-      delivery_option: formData.deliveryOption === 'pickup' ? 'Office Pickup' : 'Home Delivery',
-      customer_address: formData.deliveryOption === 'home' ? formData.address : 'Office Pickup',
+      delivery_option:
+        formData.deliveryOption === "pickup"
+          ? "Office Pickup"
+          : "Home Delivery",
+      customer_address:
+        formData.deliveryOption === "home" ? formData.address : "Office Pickup",
       order_items: orderItemsHTML,
       delivery_fee: `₦${deliveryFee.toLocaleString()}`,
       order_total: `₦${orderTotal.toLocaleString()}`,
-      payment_status: 'Paid via Paystack',
-      message: '',
-    }
-  }
+      payment_status: "Paid via Paystack",
+      message: "",
+    };
+  };
 
   const handlePayment = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.phone || !formData.state) {
-      alert('Please fill in all required fields.')
-      return
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.state
+    ) {
+      alert("Please fill in all required fields.");
+      return;
     }
 
-    if (formData.deliveryOption === 'home' && !formData.address) {
-      alert('Please enter your home delivery address.')
-      return
+    if (formData.deliveryOption === "home" && !formData.address) {
+      alert("Please enter your home delivery address.");
+      return;
     }
 
-    if (!validate()) return
+    if (!validate()) return;
 
-    setLoading(true)
+    setLoading(true);
 
     try {
       // Step 1 — Initialize payment on our secure backend
-      const initResponse = await fetch('/api/initialize-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const initResponse = await fetch("/api/initialize-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          cart: cart.map((item) => ({ id: item.id, quantity: item.quantity })),
+          cart: cart.map((item) => ({
+            id: parseInt(item.id.toString().split("-")[0]), // extracts just the number
+            quantity: item.quantity,
+          })),
           deliveryState: formData.state,
           email: formData.email,
         }),
-      })
+      });
 
-      const initData = await initResponse.json()
+      const initData = await initResponse.json();
 
       if (!initResponse.ok) {
-        alert(initData.error || 'Could not initialize payment. Please try again.')
-        setLoading(false)
-        return
+        alert(
+          initData.error || "Could not initialize payment. Please try again.",
+        );
+        setLoading(false);
+        return;
       }
 
-      const { reference, amount } = initData
+      const { reference, amount } = initData;
 
       // Step 2 — Open Paystack popup
-      const PaystackPop = (await import('@paystack/inline-js')).default
-      const paystack = new PaystackPop()
+      const PaystackPop = (await import("@paystack/inline-js")).default;
+      const paystack = new PaystackPop();
 
       paystack.newTransaction({
         key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
@@ -121,48 +135,54 @@ function Checkout() {
         onSuccess: async (transaction) => {
           // Step 3 — Verify payment on our secure backend
           try {
-            const verifyResponse = await fetch('/api/verify-payment', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+            const verifyResponse = await fetch("/api/verify-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 reference: transaction.reference,
-                cart: cart.map((item) => ({ id: item.id, quantity: item.quantity })),
+                cart: cart.map((item) => ({
+                  id: parseInt(item.id.toString().split("-")[0]), // extracts just the number
+                  quantity: item.quantity,
+                })),
                 deliveryState: formData.state,
                 orderDetails: buildOrderDetails(),
               }),
-            })
+            });
 
-            const verifyData = await verifyResponse.json()
+            const verifyData = await verifyResponse.json();
 
             if (!verifyResponse.ok) {
-              alert(verifyData.error || 'Payment verification failed. Please contact us.')
-              setLoading(false)
-              return
+              alert(
+                verifyData.error ||
+                  "Payment verification failed. Please contact us.",
+              );
+              setLoading(false);
+              return;
             }
 
             // Step 4 — Success!
-            clearCart()
-            navigate('/order-success', {
-              state: { name: formData.name }
-            })
-
+            clearCart();
+            navigate("/order-success", {
+              state: { name: formData.name },
+            });
           } catch (error) {
-            console.error('Verification error:', error)
-            alert('Something went wrong verifying your payment. Please contact us.')
-            setLoading(false)
+            console.error("Verification error:", error);
+            alert(
+              "Something went wrong verifying your payment. Please contact us.",
+            );
+            setLoading(false);
           }
         },
         onCancel: () => {
-          setLoading(false)
+          setLoading(false);
         },
-      })
-
+      });
     } catch (error) {
-      console.error('Payment error:', error)
-      alert('Something went wrong. Please try again.')
-      setLoading(false)
+      console.error("Payment error:", error);
+      alert("Something went wrong. Please try again.");
+      setLoading(false);
     }
-  }
+  };
 
   if (cart.length === 0) {
     return (
@@ -183,12 +203,11 @@ function Checkout() {
           Browse Journals
         </Link>
       </div>
-    )
+    );
   }
 
   return (
     <div className="bg-brand-cream min-h-screen px-6 md:px-16 py-10 md:py-16">
-
       {/* Back Button */}
       <Link
         to="/cart"
@@ -202,11 +221,12 @@ function Checkout() {
         <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-2">
           Almost There
         </p>
-        <h1 className="text-2xl md:text-4xl font-bold text-brand-brown">Checkout</h1>
+        <h1 className="text-2xl md:text-4xl font-bold text-brand-brown">
+          Checkout
+        </h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-
         {/* Delivery Details Form */}
         <div className="md:col-span-2 bg-white shadow-sm rounded-3xl p-6 md:p-10">
           <h2 className="text-lg md:text-xl font-bold text-brand-brown mb-6 md:mb-8">
@@ -215,7 +235,9 @@ function Checkout() {
 
           {/* Name */}
           <div className="mb-5 md:mb-6">
-            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">Full Name</label>
+            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
+              Full Name
+            </label>
             <input
               type="text"
               name="name"
@@ -228,7 +250,9 @@ function Checkout() {
 
           {/* Email */}
           <div className="mb-5 md:mb-6">
-            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">Email Address</label>
+            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
+              Email Address
+            </label>
             <input
               type="email"
               name="email"
@@ -241,7 +265,9 @@ function Checkout() {
 
           {/* Phone */}
           <div className="mb-5 md:mb-6">
-            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">Phone Number</label>
+            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
+              Phone Number
+            </label>
             <input
               type="tel"
               name="phone"
@@ -254,7 +280,9 @@ function Checkout() {
 
           {/* State Dropdown */}
           <div className="mb-5 md:mb-6">
-            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">Select Your State</label>
+            <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
+              Select Your State
+            </label>
             <select
               name="state"
               value={formData.state}
@@ -282,7 +310,7 @@ function Checkout() {
                     type="radio"
                     name="deliveryOption"
                     value="pickup"
-                    checked={formData.deliveryOption === 'pickup'}
+                    checked={formData.deliveryOption === "pickup"}
                     onChange={handleChange}
                     className="accent-brand-green"
                   />
@@ -295,18 +323,20 @@ function Checkout() {
                     type="radio"
                     name="deliveryOption"
                     value="home"
-                    checked={formData.deliveryOption === 'home'}
+                    checked={formData.deliveryOption === "home"}
                     onChange={handleChange}
                     className="accent-brand-green"
                   />
-                  <span className="text-brand-brown text-sm md:text-base">Home delivery</span>
+                  <span className="text-brand-brown text-sm md:text-base">
+                    Home delivery
+                  </span>
                 </label>
               </div>
             </div>
           )}
 
           {/* Home Delivery Address */}
-          {formData.deliveryOption === 'home' && formData.state && (
+          {formData.deliveryOption === "home" && formData.state && (
             <div className="mb-5 md:mb-6">
               <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
                 Home Address
@@ -325,8 +355,10 @@ function Checkout() {
           {/* Note */}
           <div className="mb-6 md:mb-8">
             <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
-              Order Note{' '}
-              <span className="text-brand-brown opacity-40 font-normal">(optional)</span>
+              Order Note{" "}
+              <span className="text-brand-brown opacity-40 font-normal">
+                (optional)
+              </span>
             </label>
             <textarea
               name="note"
@@ -356,7 +388,6 @@ function Checkout() {
               </>
             )}
           </button>
-
         </div>
 
         {/* Order Summary */}
@@ -370,9 +401,14 @@ function Checkout() {
               key={item.id}
               className="flex justify-between text-xs md:text-sm text-brand-brown opacity-60 mb-2"
             >
-              <span className="truncate mr-2">{item.name} x{item.quantity}</span>
+              <span className="truncate mr-2">
+                {item.name} x{item.quantity}
+              </span>
               <span className="flex-shrink-0">
-                ₦{(parseInt(item.price.replace(/[^0-9]/g, '')) * item.quantity).toLocaleString()}
+                ₦
+                {(
+                  parseInt(item.price.replace(/[^0-9]/g, "")) * item.quantity
+                ).toLocaleString()}
               </span>
             </div>
           ))}
@@ -389,7 +425,7 @@ function Checkout() {
           <div className="flex justify-between text-xs md:text-sm text-brand-brown opacity-60 mb-2">
             <span>Delivery Fee</span>
             <span>
-              {formData.state ? `₦${deliveryFee.toLocaleString()}` : '—'}
+              {formData.state ? `₦${deliveryFee.toLocaleString()}` : "—"}
             </span>
           </div>
 
@@ -402,10 +438,9 @@ function Checkout() {
             <span>₦{orderTotal.toLocaleString()}</span>
           </div>
         </div>
-
       </div>
     </div>
-  )
+  );
 }
 
-export default Checkout
+export default Checkout;

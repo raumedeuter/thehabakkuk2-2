@@ -4,7 +4,7 @@ const deliveryData = {
   "Akwa Ibom": 7000,
   "Anambra": 7000,
   "Bauchi": 7000,
-  "Bayelsa": 7500,
+  "Bayelsa": 7000,
   "Benue": 7000,
   "Borno": 7000,
   "Cross River": 7000,

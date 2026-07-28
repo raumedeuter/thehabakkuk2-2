@@ -1,4 +1,7 @@
-// Product prices in Naira — update here when prices change
+// Demo pricing configuration.
+// In a production application with a larger catalogue,
+// this data would typically come from a database or CMS.
+
 export const products = {
   1: 6000,  // Loom Journal
   2: 7000,  // Ridge Journal Gift Set
