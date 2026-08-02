@@ -63,6 +63,9 @@ export default async function handler(req, res) {
         error: 'Payment amount mismatch — possible tampering detected',
       })
     }
+    console.log("Cart:", cart)
+console.log("Expected:", expectedAmount)
+console.log("Paid:", amountPaid)
 
     // ===== SEND EMAILS =====
     const sendEmail = async (templateId, templateParams) => {
@@ -107,3 +110,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Something went wrong verifying payment' })
   }
 }
+
