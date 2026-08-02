@@ -1,37 +1,48 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const CartContext = createContext()
 
-export function CartProvider({ children }) {
-  const [cart, setCart] = useState([])
-  const [cartUpdated, setCartUpdated] = useState(false)
+const CART_STORAGE_KEY = 'h22_cart'
 
-  // Add item to cart
+export function CartProvider({ children }) {
+  const [cart, setCart] = useState(() => {
+    try {
+      const saved = localStorage.getItem(CART_STORAGE_KEY)
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
+
+  // Sync cart to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart))
+    } catch {
+      console.error('Failed to save cart to localStorage')
+    }
+  }, [cart])
+
   const addToCart = (product, quantity) => {
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.id === product.id)
       if (existing) {
-        // If product already in cart, just update the quantity
         return prevCart.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         )
       }
-      // Otherwise add it as a new item
       return [...prevCart, { ...product, quantity }]
     })
-      // Trigger toast
-  setCartUpdated(true)
-  setTimeout(() => setCartUpdated(false), 2000)
+    setCartUpdated(true)
+    setTimeout(() => setCartUpdated(false), 2000)
   }
 
-  // Remove item from cart
   const removeFromCart = (productId) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== productId))
   }
 
-  // Update quantity of an item
   const updateQuantity = (productId, quantity) => {
     if (quantity < 1) return
     setCart((prevCart) =>
@@ -41,16 +52,23 @@ export function CartProvider({ children }) {
     )
   }
 
-  // Clear entire cart
-  const clearCart = () => setCart([])
+  const clearCart = () => {
+    setCart([])
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY)
+    } catch {
+      console.error('Failed to clear cart from localStorage')
+    }
+  }
 
-  // Total number of items in cart
+  const [cartUpdated, setCartUpdated] = useState(false)
+
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
 
-  // Total price
   const cartTotal = cart.reduce((total, item) => {
     const price = parseInt(item.price.replace(/[^0-9]/g, ''))
-    return total + price * item.quantity
+    const customFee = item.isCustomised ? 1000 : 0
+    return total + (price + customFee) * item.quantity
   }, 0)
 
   return (
@@ -62,7 +80,7 @@ export function CartProvider({ children }) {
       clearCart,
       cartCount,
       cartTotal,
-      cartUpdated
+      cartUpdated,
     }}>
       {children}
     </CartContext.Provider>

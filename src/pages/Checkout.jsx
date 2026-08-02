@@ -105,6 +105,7 @@ function Checkout() {
           cart: cart.map((item) => ({
             id: parseInt(item.id.toString().split("-")[0]), // extracts just the number
             quantity: item.quantity,
+            isCustomised: item.isCustomised || false,
           })),
           deliveryState: formData.state,
           email: formData.email,
@@ -374,7 +375,7 @@ function Checkout() {
           <button
             onClick={handlePayment}
             disabled={loading}
-            className="w-full bg-brand-green text-white py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-brand-green-dark transition disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
+            className="w-full bg-brand-green text-white py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-brand-green-dark transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm md:text-base"
           >
             {loading ? (
               <>
@@ -403,11 +404,14 @@ function Checkout() {
             >
               <span className="truncate mr-2">
                 {item.name} x{item.quantity}
+                {item.isCustomised && " (Personalised)"}
               </span>
               <span className="flex-shrink-0">
                 ₦
                 {(
-                  parseInt(item.price.replace(/[^0-9]/g, "")) * item.quantity
+                  (parseInt(item.price.replace(/[^0-9]/g, "")) +
+                    (item.isCustomised ? 1000 : 0)) *
+                  item.quantity
                 ).toLocaleString()}
               </span>
             </div>

@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom'
-import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react'
-import { useCart } from '../context/CartContext'
+import { Link } from "react-router-dom";
+import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
+import { useCart } from "../context/CartContext";
 
 function Cart() {
-  const { cart, removeFromCart, updateQuantity, cartTotal } = useCart()
+  const { cart, removeFromCart, updateQuantity, cartTotal } = useCart();
 
   if (cart.length === 0) {
     return (
@@ -24,12 +24,11 @@ function Cart() {
           Browse Journals
         </Link>
       </div>
-    )
+    );
   }
 
   return (
     <div className="bg-brand-cream min-h-screen px-6 md:px-16 py-10 md:py-16">
-
       {/* Page Header */}
       <div className="mb-8 md:mb-12">
         <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-2">
@@ -41,7 +40,6 @@ function Cart() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-
         {/* Cart Items */}
         <div className="md:col-span-2 flex flex-col gap-4">
           {cart.map((item) => (
@@ -74,7 +72,7 @@ function Cart() {
                 <div className="flex items-center gap-2 md:gap-3 mt-3">
                   <button
                     onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    className="border border-brand-gold border-opacity-30 rounded-full p-1 hover:bg-brand-cream transition"
+                    className="border border-brand-gold border-opacity-30 rounded-full p-1 hover:bg-brand-cream transition cursor-pointer"
                   >
                     <Minus className="w-3 h-3 text-brand-brown" />
                   </button>
@@ -83,7 +81,7 @@ function Cart() {
                   </span>
                   <button
                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="border border-brand-gold border-opacity-30 rounded-full p-1 hover:bg-brand-cream transition"
+                    className="border border-brand-gold border-opacity-30 rounded-full p-1 hover:bg-brand-cream transition cursor-pointer"
                   >
                     <Plus className="w-3 h-3 text-brand-brown" />
                   </button>
@@ -92,17 +90,30 @@ function Cart() {
 
               {/* Subtotal + Remove */}
               <div className="flex flex-col items-end gap-3 flex-shrink-0">
+                {/* Item subtotal */}
                 <p className="font-bold text-brand-brown text-sm md:text-base">
-                  ₦{(parseInt(item.price.replace(/[^0-9]/g, '')) * item.quantity).toLocaleString()}
+                  ₦
+                  {(
+                    (parseInt(item.price.replace(/[^0-9]/g, "")) +
+                      (item.isCustomised ? 1000 : 0)) *
+                    item.quantity
+                  ).toLocaleString()}
                 </p>
+                <h3 className="font-semibold text-brand-brown text-sm md:text-base truncate">
+                  {item.name}
+                </h3>
+                {item.isCustomised && (
+                  <p className="text-brand-gold text-xs font-semibold mt-0.5">
+                    ✦ Personalised · +₦{(1000 * item.quantity).toLocaleString()}
+                  </p>
+                )}
                 <button
                   onClick={() => removeFromCart(item.id)}
-                  className="text-brand-brown opacity-30 hover:opacity-70 hover:text-red-400 transition"
+                  className="text-brand-brown opacity-30 hover:opacity-70 hover:text-red-400 transition cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
-
             </div>
           ))}
         </div>
@@ -118,9 +129,17 @@ function Cart() {
               key={item.id}
               className="flex justify-between text-xs md:text-sm text-brand-brown opacity-60 mb-2"
             >
-              <span className="truncate mr-2">{item.name} x{item.quantity}</span>
+              <span className="truncate mr-2">
+                {item.name} x{item.quantity}
+                {item.isCustomised && " (Personalised)"}
+              </span>
               <span className="flex-shrink-0">
-                ₦{(parseInt(item.price.replace(/[^0-9]/g, '')) * item.quantity).toLocaleString()}
+                ₦
+                {(
+                  (parseInt(item.price.replace(/[^0-9]/g, "")) +
+                    (item.isCustomised ? 1000 : 0)) *
+                  item.quantity
+                ).toLocaleString()}
               </span>
             </div>
           ))}
@@ -149,10 +168,9 @@ function Cart() {
             Continue Shopping
           </Link>
         </div>
-
       </div>
     </div>
-  )
+  );
 }
 
-export default Cart
+export default Cart;

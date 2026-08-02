@@ -18,7 +18,8 @@ import crimsonRedAxis from "../assets/images/crimson red y-axis journal.webp";
 import emeraldGreenAxis from "../assets/images/emerald green y-axis journal.webp";
 import royalBlueAxis from "../assets/images/royal blue y-axis journal.webp";
 import saddleBrownAxis from "../assets/images/saddle brown y-axis journal.webp";
-import crimsonRedLoom from "../assets/images/crimson red loom journal.webp";
+import pinkBlushLoom from "../assets/images/pink blush loom journal.webp";
+import beigeSandLoom from "../assets/images/beige sand loom journal.webp";
 import emeraldGreenLoom from "../assets/images/emerald forest green loom journal.webp";
 import graphiteBlackLoom from "../assets/images/graphite black loom journal.webp";
 import royalSapphireLoom from "../assets/images/royal sapphire loom journal.webp";
@@ -55,6 +56,20 @@ import ridgeTealGiftSet from "../assets/images/ridge teal gift set journal.webp"
 import charcoalBlackGrain from "../assets/images/grain charcoal black gift set journal.webp";
 import royalBlueGrain from "../assets/images/grain royal blue gift set journal.webp";
 import coffeeBrownGrain from "../assets/images/grain coffee brown gift set journal.webp";
+import onyxBlackArrow from "../assets/images/onyx black arrow journal.webp";
+import royalBlueArrow from "../assets/images/royal blue arrow journal.webp";
+import coffeeBrownArrow from "../assets/images/coffee brown arrow journal.webp";
+import navyBlueEdge from "../assets/images/navy blue edge journal.webp";
+import chocolateBrownEdge from "../assets/images/chocolate brown edge journal.webp";
+import charcoalBlackEdge from "../assets/images/charcoal black edge journal.webp";
+import crimsonRedDenim from "../assets/images/crimson red denim journal.webp";
+import royalBlueDenim from "../assets/images/royal blue denim journal.webp";
+import onyxBlackPocket from "../assets/images/onyx black pocket journal.webp";
+import royalBluePocket from "../assets/images/royal blue pocket journal.webp";
+
+
+
+
 
 const products = [
   {
@@ -62,15 +77,17 @@ const products = [
     name: "Loom Journal",
     collection: "Loom Collection",
     collectionSlug: "loom",
-    price: "₦6,000",
+    price: "₦8,000",
     description:
       "Woven texture meets premium faux leather. The Loom collection is where craftsmanship and intentionality come together.",
-    defaultVariant: "crimson-red",
+    size: "B5",
+    pages: "100 sheets",
+    defaultVariant: "pink-blush",
     variants: [
-         {
-        color: "Crimson Red",
-        slug: "crimson-red",
-        image: crimsonRedLoom,
+      {
+        color: "Pink Blush",
+        slug: "pink-blush",
+        image: pinkBlushLoom,
         inStock: true,
       },
       {
@@ -91,16 +108,24 @@ const products = [
         image: emeraldGreenLoom,
         inStock: true,
       },
+      {
+        color: "Beige Sand",
+        slug: "beige-sand",
+        image: beigeSandLoom,
+        inStock: true,
+      },
     ],
   },
   {
     id: 2,
     name: "Ridge Journal (Gift Set)",
-    collection: "Ridge Collection",
-    collectionSlug: "ridge",
+    collection: "Ridge Collection Gift Set",
+    collectionSlug: "ridge-gift-set",
     price: "N/A",
     description:
       "Diagonal line detailing on premium faux leather. The Ridge collection is where structure meets soul.",
+    size: "N/A",
+    pages: "N/A",
     defaultVariant: "bronze",
     variants: [
       {
@@ -140,9 +165,11 @@ const products = [
     name: "Y-Axis Journal",
     collection: "Axis Collection",
     collectionSlug: "axis",
-    price: "₦6,000",
+    price: "₦5,500",
     description:
       "Y-strap panel journals with a stunning 2-tone panel design. Bold, structured and made for the writer who moves with intention.",
+    size: "A5",
+    pages: "100 sheets",
     defaultVariant: "charcoal-grey",
     variants: [
       {
@@ -186,6 +213,8 @@ const products = [
     price: "₦5,000",
     description:
       "Smooth cover journal with elastic strap closure. Minimal and secure — built for thoughts that need to stay close.",
+    size: "A5",
+    pages: "100 sheets",
     defaultVariant: "sky-blue",
     variants: [
       {
@@ -225,9 +254,11 @@ const products = [
     name: "Ridge Journal",
     collection: "Ridge Collection",
     collectionSlug: "ridge",
-    price: "₦6,000",
+    price: "₦5,000",
     description:
       "Diagonal line detailing on premium faux leather. The Ridge collection is where structure meets soul.",
+    size: "A5",
+    pages: "100 sheets",
     defaultVariant: "crimson-red",
     variants: [
       {
@@ -265,11 +296,13 @@ const products = [
   {
     id: 6,
     name: "Orbit Journal (Gift Set)",
-    collection: "Orbit Journal",
-    collectionSlug: "orbit",
+    collection: "Orbit Journal Gift Set",
+    collectionSlug: "orbit-gift-set",
     price: "N/A",
     description:
       "A refined circle of intention. The Orbit journal moves with you — purposeful, elegant and deeply personal.",
+    size: "N/A",
+    pages: "N/A",
     defaultVariant: "pine-green",
     variants: [
       {
@@ -310,9 +343,11 @@ const products = [
     name: "Horizon Journal",
     collection: "Horizon Collection",
     collectionSlug: "horizon",
-    price: "₦6,000",
+    price: "₦6,500",
     description:
       "2-tone suede with a circular snap button. Soft, premium and made for quiet moments of reflection.",
+    size: "A5",
+    pages: "100 sheets",
     defaultVariant: "cognac-brown",
     variants: [
       {
@@ -352,9 +387,11 @@ const products = [
     name: "Frame Journal",
     collection: "Frame Collection",
     collectionSlug: "frame",
-    price: "₦6,000",
+    price: "₦6,500",
     description:
       "Panel faux leather with a gold rectangular clasp. Elegant, refined and crafted for the writer who values the details.",
+    size: "A5",
+    pages: "100 sheets",
     defaultVariant: "graphite-black",
     variants: [
       {
@@ -394,9 +431,11 @@ const products = [
     name: "Slate Journal",
     collection: "Slate Collection",
     collectionSlug: "slate",
-    price: "₦6,000",
+    price: "₦5,500",
     description:
       "Clean, minimal and deeply purposeful. The Slate collection is for the writer who lets their words do the talking.",
+    size: "A5",
+    pages: "100 sheets",
     defaultVariant: "forest-green",
     variants: [
       {
@@ -436,9 +475,11 @@ const products = [
     name: "Archive Journal",
     collection: "Archive Collection",
     collectionSlug: "archive",
-    price: "₦6,000",
+    price: "₦6,500",
     description:
       "2-tone faux leather with a button strap and ribbon marker. Classic, timeless and built to last through every season.",
+    size: "A5",
+    pages: "100 sheets",
     defaultVariant: "desert-sand",
     variants: [
       {
@@ -478,9 +519,11 @@ const products = [
     name: "Steady Suede Journal",
     collection: "Steady Suede Set",
     collectionSlug: "steady-suede",
-    price: "₦6,000",
+    price: "₦6,500",
     description:
       "A premium suede set for the writer who values consistency. Soft to the touch, steady in purpose — made for the long haul.",
+    size: "A5",
+    pages: "100 sheets",
     defaultVariant: "ice-blue",
     variants: [
       {
@@ -520,9 +563,11 @@ const products = [
     name: "Grain Journal (Gift Set)",
     collection: "Grain Collection",
     collectionSlug: "grain",
-    price: "₦6,000",
+    price: "₦13,000",
     description:
-      "Woodgrain textured cover — a gift set collection perfect for the writer in your life. Beautiful, warm and deeply intentional.",
+      "Woodgrain textured cover. Magnetic flap with metal plate. Includes matching pen, ribbon marker. Premium gift box, 3 colors. Premium gifts for important thoughts.",
+    size: "B5",
+    pages: "100 sheets",
     defaultVariant: "charcoal-black",
     variants: [
       {
@@ -541,6 +586,122 @@ const products = [
         color: "Coffee Brown",
         slug: "coffee-brown",
         image: coffeeBrownGrain,
+        inStock: true,
+      },
+    ],
+  },
+  {
+    id: 13,
+    name: "Denim Journal",
+    collection: "Denim Collection",
+    collectionSlug: "denim",
+    price: "₦7,000",
+    description:
+      "Denim textured faux leather with diagonal closure + acrylic bar . Ribbon marker. Modern casual journals.",
+    size: "B5",
+    pages: "100 sheets",
+    defaultVariant: "crimson-red",
+    variants: [
+      {
+        color: "Crimson Red",
+        slug: "crimson-red",
+        image: crimsonRedDenim,
+        inStock: true,
+      },
+      {
+        color: "Royal Blue",
+        slug: "royal-blue",
+        image: royalBlueDenim,
+        inStock: true,
+      },
+    ],
+  },
+  {
+    id: 14,
+    name: "Arrow Journal",
+    collection: "Arrow Collection",
+    collectionSlug: "arrow",
+    price: "₦5,500",
+    description:
+      "2 tone faux leather with V Chevron panel + white strap + circular gold clasp + ribbon marker.",
+    size: "A5",
+    pages: "100 sheets",
+    defaultVariant: "onyx-black",
+    variants: [
+      {
+        color: "Onyx Black",
+        slug: "onyx-black",
+        image: onyxBlackArrow,
+        inStock: true,
+      },
+      {
+        color: "Royal Blue",
+        slug: "royal-blue",
+        image: royalBlueArrow,
+        inStock: true,
+      },
+      {
+        color: "Coffee Brown",
+        slug: "coffee-brown",
+        image: coffeeBrownArrow,
+        inStock: true,
+      },
+    ],
+  },
+  {
+    id: 15,
+    name: "Pocket Journal",
+    collection: "Pocket Collection",
+    collectionSlug: "pocket",
+    price: "₦4,000",
+    description:
+      "2-tone suede with a circular snap button. Soft, premium and made for quiet moments of reflection.",
+    size: "B6",
+    pages: "100 sheets",
+    defaultVariant: "onyx-black",
+    variants: [
+      {
+        color: "Onyx Black",
+        slug: "onyx-black",
+        image: onyxBlackPocket,
+        inStock: true,
+      },
+      {
+        color: "Royal Blue",
+        slug: "royal-blue",
+        image: royalBluePocket,
+        inStock: true,
+      },
+    ],
+  },
+  {
+    id: 16,
+    name: "Edge Journal",
+    collection: "Edge Collection",
+    collectionSlug: "edge",
+    price: "₦5,500",
+    description:
+      "Diagonal Side Split with textured panel + magnetic flap closure. Modern envelope journals",
+    size: "A5",
+    pages: "100 sheets",
+    defaultVariant: "navy-blue",
+    variants: [
+      {
+        color: "Navy Blue",
+        slug: "navy-blue",
+        image: navyBlueEdge,
+        inStock: true,
+      },
+      {
+        color: "Chocolate Brown",
+        slug: "chocolate-brown",
+        image: chocolateBrownEdge,
+        inStock: true,
+      },
+      {
+        color: "Charcoal Black",
+        slug: "charcoal-black",
+        image: charcoalBlackEdge,
         inStock: true,
       },
     ],

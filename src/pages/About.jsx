@@ -11,7 +11,7 @@ function About() {
           Our Story
         </p>
         <h1 className="text-3xl md:text-4xl font-bold text-brand-brown mb-4">
-          Write The Vision. Make It Plain.
+          Write It! Make It Plain.
         </h1>
         <p className="text-brand-brown opacity-70 text-sm md:text-base max-w-2xl mx-auto">
           Born out of a desire to help people live intentionally —

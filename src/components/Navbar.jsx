@@ -55,7 +55,7 @@ function Navbar() {
   </div>
   <button
     onClick={() => setMenuOpen(!menuOpen)}
-    className="text-brand-brown hover:text-brand-green transition"
+    className="text-brand-brown hover:text-brand-green transition cursor-pointer"
   >
     {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
   </button>

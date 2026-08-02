@@ -220,7 +220,7 @@ function Contact() {
          <button
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full bg-brand-green text-white py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-brand-green-dark transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-brand-green text-white py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-brand-green-dark transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm md:text-base"
             >
             {loading ? (
                 <>

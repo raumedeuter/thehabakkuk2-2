@@ -36,7 +36,7 @@ function Home() {
             to="/custom-order"
             className="border-2 border-brand-gold text-brand-gold px-8 py-3 rounded-full font-semibold hover:bg-brand-gold hover:text-white transition text-center"
           >
-            Custom Journal
+            Personalise a Journal
           </Link>
         </div>
       </section>
@@ -230,20 +230,21 @@ function Home() {
       <section className="bg-brand-cream px-6 md:px-16 py-12 md:py-20 flex flex-col items-center text-center">
         <div className="bg-white rounded-3xl px-6 md:px-16 py-10 md:py-14 w-full max-w-4xl shadow-sm">
           <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-4">
-            Made Just For You
+            Make It Yours
           </p>
           <h2 className="text-2xl md:text-4xl font-bold text-brand-brown mb-4">
-            Something More Personal?
+            Personalise Your Journal
           </h2>
           <p className="text-brand-brown opacity-70 max-w-2xl mx-auto mb-8 leading-relaxed text-sm md:text-base">
-            Can't find exactly what you're looking for? Tell us your vision and
-            we'll bring it to life — a journal designed just for you.
+            Whether it's a gift or a journal for your own quiet moments, add a
+            personal touch with custom names, initials or meaningful text,
+            beautifully finished in a style that reflects you.
           </p>
           <Link
             to="/custom-order"
             className="bg-brand-gold text-white px-8 py-3 rounded-full font-semibold hover:bg-brand-gold-dark transition"
           >
-            Request a Custom Journal
+            Start Personalising
           </Link>
         </div>
       </section>
