@@ -69,26 +69,34 @@ export const deliveryFees = {
  */
 export const validateCart = (cart, res) => {
   if (!Array.isArray(cart) || cart.length === 0) {
-    res.status(400).json({ error: 'Cart must be a non-empty array' })
-    return false
+    res.status(400).json({ error: "Cart must be a non-empty array" });
+    return false;
   }
 
   for (const item of cart) {
-    const numericId = parseInt(item.id.toString().split('-')[0])
-    const validId = Number.isInteger(numericId) && products[numericId] !== undefined
-    const validQuantity = Number.isInteger(item.quantity) && item.quantity > 0 && item.quantity <= 100
+    const numericId = parseInt(item.id.toString().split("-")[0]);
+    const validId =
+      Number.isInteger(numericId) && products[numericId] !== undefined;
+    const validQuantity =
+      Number.isInteger(item.quantity) &&
+      item.quantity > 0 &&
+      item.quantity <= 100;
 
     if (!validId) {
-      res.status(400).json({ error: `Invalid product id: ${item.id}` })
-      return false
+      res.status(400).json({ error: `Invalid product id: ${item.id}` });
+      return false;
     }
     if (!validQuantity) {
-      res.status(400).json({ error: `Invalid quantity for product id: ${item.id} — must be between 1 and 100` })
-      return false
+      res
+        .status(400)
+        .json({
+          error: `Invalid quantity for product id: ${item.id} — must be between 1 and 100`,
+        });
+      return false;
     }
   }
 
-  return true
+  return true;
 };
 
 /**
@@ -97,15 +105,17 @@ export const validateCart = (cart, res) => {
  */
 export const calculateTotal = (cart, deliveryState) => {
   if (!deliveryState || deliveryFees[deliveryState] === undefined) {
-    throw new Error(`Invalid delivery state: ${deliveryState}`)
+    throw new Error(`Invalid delivery state: ${deliveryState}`);
   }
 
   const subtotal = cart.reduce((sum, item) => {
-    const basePrice = products[item.id]
-    const customFee = item.isCustomised ? 1000 : 0
-    return sum + (basePrice + customFee) * item.quantity
-  }, 0)
+    // Strip variant slug — "4-sky-blue-custom-123" → 4
+    const numericId = parseInt(item.id.toString().split("-")[0]);
+    const basePrice = products[numericId];
+    const customFee = item.isCustomised ? 1000 : 0;
+    return sum + (basePrice + customFee) * item.quantity;
+  }, 0);
 
-  const deliveryFee = deliveryFees[deliveryState]
-  return subtotal + deliveryFee
+  const deliveryFee = deliveryFees[deliveryState];
+  return subtotal + deliveryFee;
 };

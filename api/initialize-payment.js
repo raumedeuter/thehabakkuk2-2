@@ -18,12 +18,12 @@ export default async function handler(req, res) {
     if (!validateCart(cart, res)) return
 
     // ===== VALIDATE DELIVERY STATE =====
-    // if (!deliveryState || deliveryFees[deliveryState] === undefined) {
-    //   return res.status(400).json({ error: 'Invalid delivery state' })
-    // }
+    if (!deliveryState || deliveryFees[deliveryState] === undefined) {
+      return res.status(400).json({ error: 'Invalid delivery state' });
+    }
 
     // ===== CALCULATE TOTAL =====
-    const total = calculateTotal(cart, deliveryState)
+    const total = calculateTotal(cart, deliveryState);
 
     // ===== INITIALIZE WITH PAYSTACK =====
     const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
@@ -40,13 +40,13 @@ export default async function handler(req, res) {
     })
 
     if (!paystackResponse.ok) {
-      return res.status(502).json({ error: 'Could not reach Paystack to initialize payment' })
+      return res.status(502).json({ error: 'Could not reach Paystack to initialize payment' });
     }
 
-    const data = await paystackResponse.json()
+    const data = await paystackResponse.json();
 
     if (data.status !== true) {
-      return res.status(400).json({ error: 'Could not initialize payment' })
+      return res.status(400).json({ error: 'Could not initialize payment' });
     }
 
     return res.status(200).json({

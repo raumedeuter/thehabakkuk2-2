@@ -144,6 +144,7 @@ function Checkout() {
                 cart: cart.map((item) => ({
                   id: parseInt(item.id.toString().split("-")[0]), // extracts just the number
                   quantity: item.quantity,
+                  isCustomised: item.isCustomised || false,
                 })),
                 deliveryState: formData.state,
                 orderDetails: buildOrderDetails(),
