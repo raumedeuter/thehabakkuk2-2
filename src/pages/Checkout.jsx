@@ -66,14 +66,27 @@ function Checkout() {
           : "Home Delivery",
       customer_address:
         formData.deliveryOption === "home" ? formData.address : "Office Pickup",
+
       order_items: orderItemsHTML,
+
+      items: cart.map((item) => ({
+        name: item.name,
+        collection: item.collection,
+        color: item.color,
+        size: item.size,
+        quantity: item.quantity,
+        price: item.price,
+        isCustomised: item.isCustomised,
+        font: item.font,
+        customText: item.customText,
+      })),
+
       delivery_fee: `₦${deliveryFee.toLocaleString()}`,
       order_total: `₦${orderTotal.toLocaleString()}`,
       payment_status: "Paid via Paystack",
       message: "",
     };
   };
-
   const handlePayment = async (e) => {
     e.preventDefault();
 
@@ -104,8 +117,11 @@ function Checkout() {
         body: JSON.stringify({
           cart: cart.map((item) => ({
             id: parseInt(item.id.toString().split("-")[0]), // extracts just the number
+            name: item.name,
+            color: item.color || item.name.split("—")[1]?.trim() || "",
             quantity: item.quantity,
             isCustomised: item.isCustomised || false,
+            customisation: item.customisation || null,
           })),
           deliveryState: formData.state,
           email: formData.email,
@@ -143,8 +159,11 @@ function Checkout() {
                 reference: transaction.reference,
                 cart: cart.map((item) => ({
                   id: parseInt(item.id.toString().split("-")[0]), // extracts just the number
+                  name: item.name,
+                  color: item.color || item.name.split("—")[1]?.trim() || "",
                   quantity: item.quantity,
                   isCustomised: item.isCustomised || false,
+                  customisation: item.customisation || null,
                 })),
                 deliveryState: formData.state,
                 orderDetails: buildOrderDetails(),
