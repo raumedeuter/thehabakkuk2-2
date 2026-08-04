@@ -1,25 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-green: #87A878;
-  --color-brand-gold: #C9A84C;
-  --color-brand-cream: #FAF7F2;
-  --color-brand-brown: #2C1A0E;
-  --color-brand-green-dark: #6B8F5E;
-  --color-brand-gold-dark: #A8873A;
+  --color-brand-green: #87a878;
+  --color-brand-gold: #c9a84c;
+  --color-brand-cream: #faf7f2;
+  --color-brand-brown: #2c1a0e;
+  --color-brand-green-dark: #6b8f5e;
+  --color-brand-gold-dark: #a8873a;
 
-  --font-heading: 'Cormorant Garamond', serif;
-  --font-body: 'Lato', sans-serif;
+  --font-heading: "Cormorant Garamond", serif;
+  --font-body: "Lato", sans-serif;
 }
 
 body {
-  background-color: #FAF7F2;
-  color: #2C1A0E;
-  font-family: 'Lato', sans-serif;
+  background-color: #faf7f2;
+  color: #2c1a0e;
+  font-family: "Lato", sans-serif;
+  width: 100%;
+  overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Cormorant Garamond', serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Cormorant Garamond", serif;
 }
 
 button {
