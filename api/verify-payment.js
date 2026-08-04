@@ -17,9 +17,9 @@ export default async function handler(req, res) {
     if (!validateCart(cart, res)) return
 
     // ===== VALIDATE DELIVERY STATE =====
-    // if (!deliveryState || !deliveryState.trim()) {
-    //   return res.status(400).json({ error: 'Delivery state is required' })
-    // }
+    if (!deliveryState || !deliveryState.trim()) {
+      return res.status(400).json({ error: 'Delivery state is required' })
+    }
 
     // ===== CALCULATE EXPECTED AMOUNT =====
     const expectedAmount = calculateTotal(cart, deliveryState)

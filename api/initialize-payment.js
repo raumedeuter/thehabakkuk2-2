@@ -17,10 +17,10 @@ export default async function handler(req, res) {
     // ===== VALIDATE CART =====
     if (!validateCart(cart, res)) return
 
-    // // ===== VALIDATE DELIVERY STATE =====
-    // if (!deliveryState || !deliveryState.trim()) {
-    //   return res.status(400).json({ error: 'Delivery state is required' })
-    // }
+    // ===== VALIDATE DELIVERY STATE =====
+    if (!deliveryState || !deliveryState.trim()) {
+      return res.status(400).json({ error: 'Delivery state is required' })
+    }
 
     // ===== CALCULATE TOTAL =====
     const total = calculateTotal(cart, deliveryState);
