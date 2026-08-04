@@ -474,58 +474,66 @@ function CustomOrder() {
           {entries.map((entry, index) => (
             <div
               key={entry.entryId}
-              className="bg-white shadow-sm rounded-3xl p-5 md:p-6 mb-4"
+              className="bg-white shadow-sm rounded-3xl overflow-hidden mb-4"
             >
-              {/* Top row — image + basic info + actions */}
-              <div className="flex gap-3 md:gap-4 mb-4">
+              {/* ── Zone A: Product row ── */}
+              <div className="flex gap-3 p-4 md:p-6">
+                {/* Image */}
                 {entry.image && (
-                  <img
-                    src={entry.image}
-                    alt={entry.name}
-                    className="w-14 h-14 md:w-16 md:h-16 object-contain rounded-xl flex-shrink-0 bg-brand-cream p-1"
-                  />
+                  <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-brand-cream">
+                    <img
+                      src={entry.image}
+                      alt={entry.name}
+                      className="w-full h-full object-contain p-1"
+                    />
+                  </div>
                 )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-brand-gold font-semibold uppercase tracking-wider mb-0.5 truncate">
+
+                {/* Info */}
+                <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+                  <p className="text-xs text-brand-gold font-semibold uppercase tracking-wider leading-none">
                     {entry.collection}
                   </p>
-                  <p className="font-bold text-brand-brown text-sm leading-tight">
+                  {/* Name wraps naturally */}
+                  <p className="font-bold text-brand-brown text-sm md:text-base leading-snug">
                     {entry.name}
                   </p>
                   <p className="text-brand-brown text-sm">{entry.color}</p>
-                  <p className="text-brand-brown opacity-50 text-xs mt-0.5">
+                  <p className="text-brand-brown opacity-50 text-xs">
                     {entry.size} · Qty: {entry.quantity}
                   </p>
                   <p className="text-brand-green font-bold text-sm mt-0.5">
                     {entry.price}
                   </p>
                 </div>
-                <div className="flex flex-col items-end gap-2 flex-shrink-0">
+
+                {/* Actions */}
+                <div className="flex-shrink-0 flex flex-col items-end gap-2">
                   <button
                     onClick={() => setStep(1)}
-                    className="text-brand-gold text-xs font-semibold hover:opacity-70 transition"
+                    className="text-brand-gold text-xs font-semibold hover:opacity-70 transition cursor-pointer"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => removeEntry(entry.entryId)}
-                    className="text-brand-brown opacity-30 hover:opacity-70 hover:text-red-400 transition"
+                    className="text-brand-brown opacity-30 hover:opacity-70 hover:text-red-400 transition cursor-pointer"
                   >
                     <Trash2 className="w-3 h-3" />
                   </button>
                 </div>
               </div>
 
-              {/* Customisation details — separate row */}
-              <div className="border-t border-brand-gold border-opacity-10 pt-3">
-                <p className="text-xs text-brand-brown opacity-50 mb-2">
-                  Customisation
+              {/* ── Zone B: Customisation details ── */}
+              <div className="border-t border-brand-gold border-opacity-10 px-4 md:px-6 py-3 bg-brand-cream">
+                <p className="text-xs text-brand-gold font-semibold uppercase tracking-wider mb-2">
+                  ✦ Personalisation
                 </p>
-                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {entry.font && (
                     <div>
-                      <p className="text-xs text-brand-brown opacity-40">
-                        Font
+                      <p className="text-xs text-brand-brown opacity-50 mb-0.5">
+                        Font Style
                       </p>
                       <p className="text-xs text-brand-brown font-semibold">
                         {entry.font}
@@ -533,9 +541,9 @@ function CustomOrder() {
                     </div>
                   )}
                   {entry.message && (
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-brand-brown opacity-40">
-                        Message
+                    <div>
+                      <p className="text-xs text-brand-brown opacity-50 mb-0.5">
+                        Custom Text
                       </p>
                       <p className="text-xs text-brand-brown break-words">
                         {entry.message}
@@ -590,8 +598,10 @@ function CustomOrder() {
       )}
 
       {/* ===== PRODUCT SELECTOR MODAL ===== */}
+      {/* Both modals — add this to the outer fixed div */}
+
       {showProductSelector && (
-        <div className="fixed inset-0 bg-brand-brown bg-opacity-50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
+        <div className="fixed inset-0 bg-brand-brown bg-opacity-50 z-50 flex items-end md:items-center justify-center p-0 md:p-4 touch-action-none">
           <div className="bg-white rounded-t-3xl md:rounded-3xl p-6 w-full md:max-w-md max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-brand-brown text-lg">
@@ -740,7 +750,7 @@ function CustomOrder() {
 
       {/* ===== FONT MODAL ===== */}
       {showFontModal && (
-        <div className="fixed inset-0 bg-brand-brown bg-opacity-50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
+        <div className="fixed inset-0 bg-brand-brown bg-opacity-50 z-50 flex items-end md:items-center justify-center p-0 md:p-4 touch-action-none">
           <div className="bg-white rounded-t-3xl md:rounded-3xl p-6 w-full md:max-w-lg max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-bold text-brand-brown text-lg">

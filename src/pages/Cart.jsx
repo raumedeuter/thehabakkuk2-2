@@ -45,75 +45,114 @@ function Cart() {
           {cart.map((item) => (
             <div
               key={item.id}
-              className="bg-white shadow-sm rounded-2xl p-4 md:p-5 flex gap-4 md:gap-5 items-center"
+              className="bg-white shadow-sm rounded-2xl overflow-hidden mb-4"
             >
-              {/* Image */}
-              <div className="rounded-xl overflow-hidden w-20 h-20 md:w-24 md:h-24 flex-shrink-0">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              {/* ── Zone A: Product row ── */}
+              <div className="flex gap-3 p-4 md:p-5">
+                {/* Image — fixed size, never shrinks */}
+                <div className="flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-brand-cream">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-contain p-1"
+                  />
+                </div>
 
-              {/* Item Info */}
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-brand-gold font-semibold uppercase tracking-wider mb-1 hidden md:block">
-                  {item.collection}
-                </p>
-                <h3 className="font-semibold text-brand-brown text-sm md:text-base truncate">
-                  {item.name}
-                </h3>
-                <p className="text-brand-green font-bold mt-1 text-sm md:text-base">
-                  {item.price}
-                </p>
+                {/* Info — takes remaining space, wraps naturally */}
+                <div className="flex-1 min-w-0 flex flex-col gap-1">
+                  <p className="text-xs text-brand-gold font-semibold uppercase tracking-wider leading-none">
+                    {item.collection}
+                  </p>
+                  {/* Name wraps — no truncate */}
+                  <p className="font-semibold text-brand-brown text-sm md:text-base leading-snug">
+                    {item.name}
+                  </p>
+                  <p className="text-brand-green font-bold text-sm">
+                    {item.price}
+                    {item.isCustomised && (
+                      <span className="text-brand-gold font-normal ml-1 text-xs">
+                        + ₦1,000 personalisation
+                      </span>
+                    )}
+                  </p>
 
-                {/* Quantity Counter */}
-                <div className="flex items-center gap-2 md:gap-3 mt-3">
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    className="border border-brand-gold border-opacity-30 rounded-full p-1 hover:bg-brand-cream transition cursor-pointer"
-                  >
-                    <Minus className="w-3 h-3 text-brand-brown" />
-                  </button>
-                  <span className="font-semibold text-brand-brown text-sm">
-                    {item.quantity}
-                  </span>
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="border border-brand-gold border-opacity-30 rounded-full p-1 hover:bg-brand-cream transition cursor-pointer"
-                  >
-                    <Plus className="w-3 h-3 text-brand-brown" />
-                  </button>
+                  {/* Quantity + Remove on the same row, below the name */}
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="flex items-center border border-brand-gold border-opacity-30 rounded-full overflow-hidden">
+                      <button
+                        onClick={() =>
+                          updateQuantity(item.id, item.quantity - 1)
+                        }
+                        className="w-8 h-8 flex items-center justify-center hover:bg-brand-cream transition cursor-pointer text-brand-brown"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="w-6 text-center font-semibold text-brand-brown text-sm">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() =>
+                          updateQuantity(item.id, item.quantity + 1)
+                        }
+                        className="w-8 h-8 flex items-center justify-center hover:bg-brand-cream transition cursor-pointer text-brand-brown"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={() => removeFromCart(item.id)}
+                      className="text-brand-brown opacity-30 hover:opacity-70 hover:text-red-400 transition cursor-pointer p-1"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Subtotal — right aligned, never shrinks */}
+                <div className="flex-shrink-0 text-right">
+                  <p className="font-bold text-brand-brown text-sm md:text-base">
+                    ₦
+                    {(
+                      (parseInt(item.price.replace(/[^0-9]/g, "")) +
+                        (item.isCustomised ? 1000 : 0)) *
+                      item.quantity
+                    ).toLocaleString()}
+                  </p>
                 </div>
               </div>
 
-              {/* Subtotal + Remove */}
-              <div className="flex flex-col items-end gap-3 flex-shrink-0">
-                {/* Item subtotal */}
-                <p className="font-bold text-brand-brown text-sm md:text-base">
-                  ₦
-                  {(
-                    (parseInt(item.price.replace(/[^0-9]/g, "")) +
-                      (item.isCustomised ? 1000 : 0)) *
-                    item.quantity
-                  ).toLocaleString()}
-                </p>
-                <h3 className="font-semibold text-brand-brown text-sm md:text-base truncate">
-                  {item.name}
-                </h3>
-                {item.isCustomised && (
-                  <p className="text-brand-gold text-xs font-semibold mt-0.5">
-                    ✦ Personalised · +₦{(1000 * item.quantity).toLocaleString()}
+              {/* ── Zone B: Customisation details — only renders if personalised ── */}
+              {item.isCustomised && item.customisation && (
+                <div className="border-t border-brand-gold border-opacity-10 px-4 md:px-5 py-3 bg-brand-cream">
+                  <p className="text-xs text-brand-gold font-semibold uppercase tracking-wider mb-2">
+                    ✦ Personalisation Details
                   </p>
-                )}
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="text-brand-brown opacity-30 hover:opacity-70 hover:text-red-400 transition cursor-pointer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                    {item.customisation.font && (
+                      <div>
+                        <p className="text-xs text-brand-brown opacity-50">
+                          Font
+                        </p>
+                        <p className="text-xs text-brand-brown font-semibold">
+                          {item.customisation.font}
+                        </p>
+                      </div>
+                    )}
+                    {item.customisation.message && (
+                      <div>
+                        <p className="text-xs text-brand-brown opacity-50">
+                          Custom Text
+                        </p>
+                        {/* break-words prevents long text from overflowing */}
+                        <p className="text-xs text-brand-brown break-words">
+                          {item.customisation.message}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
