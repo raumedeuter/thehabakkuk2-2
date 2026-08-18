@@ -1,5 +1,6 @@
 import { PenLine, Heart, Star } from 'lucide-react'
 import lifestyleHero from '../assets/images/lifestyle-hero.png'
+import FAQAccordion from '../components/FAQAccordion'
 
 function About() {
   return (
@@ -24,46 +25,90 @@ function About() {
         <div className="h-px w-1/2 bg-brand-gold opacity-20"></div>
       </div>
 
-      {/* ===== MISSION SECTION ===== */}
-<section className="bg-brand-cream px-6 md:px-16 py-12 md:py-20">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center max-w-6xl mx-auto">
+      {/* ===== THE HEART BEHIND H22 ===== */}
+      <section className="bg-brand-cream px-6 md:px-16 py-12 md:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start max-w-6xl mx-auto">
 
-    {/* Text Content */}
-    <div className="flex flex-col items-start text-left justify-center min-h-[500px]">
-      <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-4">
-        Our Mission
-      </p>
-      <h2 className="text-2xl md:text-3xl font-bold text-brand-brown mb-6">
-        Why We Exist
-      </h2>
-      <p className="text-brand-brown opacity-70 leading-relaxed mb-4 text-sm md:text-base">
-        At TheHabakkuk2&#58;2, we believe every person carries a vision
-        worth writing down. Habakkuk 2:2 says —{' '}
-        <span className="text-brand-green font-semibold italic">
-          "Write the vision and make it plain."
-        </span>{' '}
-        That is exactly what we exist to help you do.
-      </p>
-      <p className="text-brand-brown opacity-70 leading-relaxed text-sm md:text-base">
-        Our journals are more than just notebooks — they are tools for
-        clarity, gratitude, prayer, and intentional living. Premium faux
-        leather write-kits crafted for reflection and beauty in your
-        quiet moments. Whether you are a student, a professional, or
-        someone on a faith journey, there is a journal here for you.
-      </p>
-    </div>
+         {/* Text Content */}
+<div className="flex flex-col text-left">
+  <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-3">
+    Our Mission
+  </p>
+  <h2 className="text-2xl md:text-3xl font-bold text-brand-brown mb-6">
+    The Heart Behind H22..
+  </h2>
 
-    {/* Image */}
-    <div className="rounded-3xl overflow-hidden shadow-sm">
-      <img
-        src={lifestyleHero}
-        alt="Journaling lifestyle"
-        className="w-full h-72 md:h-[500px] object-cover"
-      />
-    </div>
+  <p className="text-brand-brown opacity-80 leading-relaxed mb-3 text-sm md:text-base">
+    At seed level it was an idea from my Friend{' '}
+    <span className="text-brand-gold">⋆The Holy Spirit⋆</span>
+  </p>
 
+  <p className="text-brand-brown opacity-70 leading-relaxed mb-3 text-sm md:text-base">
+    I believe My Friend trusted me with this idea because of my
+    experiential understanding of the beauty that is uncovered in
+    pouring on pages with ink{' '}
+    <span className="text-brand-green italic font-medium">⋆writing⋆</span> —
+    it is one of those things one can only fully understand through experience.
+  </p>
+
+  <p className="text-brand-brown opacity-70 leading-relaxed mb-3 text-sm md:text-base">
+    In our world today{' '}
+    <span className="text-brand-brown font-semibold opacity-90">stillness</span>{' '}
+    has become a rarity, with mindfulness practices being drowned out
+    by digital noise. Acts of stillness like journaling
+    are getting lost in today's saturated digital space.
+  </p>
+
+  <p className="text-brand-brown font-semibold italic text-sm md:text-base opacity-90 mb-3 pl-4 border-l-2 border-brand-gold border-opacity-40">
+    Stillness is now a lost art — like a very good thing that was neglected
+    and now it is hard to get back.
+  </p>
+
+  <p className="text-brand-brown opacity-70 leading-relaxed mb-3 text-sm md:text-base">
+    But intentional quiet moments like journaling
+    help one to{' '}
+    <span className="text-brand-brown font-semibold opacity-90">connect to themselves</span>,{' '}
+    <span className="text-brand-brown font-semibold opacity-90">connect to God</span>,{' '}
+    connect to their minds, stay grounded and function better.
+    Journaling helps one process emotions, reduce stress, and boost self awareness.
+  </p>
+
+  <p className="text-brand-brown opacity-70 leading-relaxed mb-4 text-sm md:text-base">
+    In journaling one finds himself: you sit with your thoughts, opinions, and views
+    and own and evaluate them. You draw closer to yourself and become a better
+    version of yourself — as opposed to a life characterised by noise and not a
+    single moment of stillness.
+  </p>
+
+  <div className="bg-white rounded-2xl px-5 py-4 border border-brand-gold border-opacity-20 mb-4">
+    <p className="text-brand-brown font-semibold italic text-sm md:text-base leading-relaxed mb-2">
+      For the best you — still moments have to be part of you.
+      You have to pause and pour on paper.
+    </p>
+    <p className="text-brand-brown opacity-70 text-sm md:text-base leading-relaxed">
+      And journaling {' '}
+      is a good place to start, and the{' '}
+      <span className="text-brand-brown font-semibold">H ✶2.2</span>{' '}
+      has just the right page for you to pour on.
+    </p>
   </div>
-</section>
+
+  <p className="text-brand-gold text-center text-base tracking-widest opacity-50">
+    ⋆✶⋆
+  </p>
+</div>
+
+          {/* Image */}
+          <div className="rounded-3xl overflow-hidden shadow-sm md:sticky md:top-24">
+            <img
+              src={lifestyleHero}
+              alt="Journaling lifestyle"
+              className="w-full h-64 md:h-[600px] object-cover"
+            />
+          </div>
+
+        </div>
+      </section>
 
       {/* ===== DIVIDER ===== */}
       <div className="flex justify-center py-4 px-6">
@@ -113,6 +158,25 @@ function About() {
           </div>
 
         </div>
+      </section>
+
+      {/* ===== DIVIDER ===== */}
+      <div className="flex justify-center py-4 px-6">
+        <div className="h-px w-1/2 bg-brand-gold opacity-20"></div>
+      </div>
+
+      {/* ===== FAQ SECTION ===== */}
+      <section className="bg-brand-cream px-6 md:px-16 py-12 md:py-20">
+        <p className="text-brand-gold font-semibold tracking-widest text-xs uppercase mb-4 text-center">
+          Got Questions?
+        </p>
+        <h2 className="text-2xl md:text-3xl font-bold text-center text-brand-brown mb-3">
+          Frequently Asked Questions
+        </h2>
+        <p className="text-brand-brown opacity-60 text-sm md:text-base text-center max-w-xl mx-auto mb-10 md:mb-12">
+          Everything you need to know about H22 and what we stand for.
+        </p>
+        <FAQAccordion />
       </section>
 
       {/* ===== DIVIDER ===== */}
