@@ -24,16 +24,16 @@ export const CUSTOMISATION_FEE = 1000
 // ─── Delivery fees per Nigerian state in Naira ───────────────────────────────
 // Update fees here only. Changes apply to checkout and emails.
 export const deliveryFees = {
-  "Abia": 5000, "Adamawa": 7000, "Akwa Ibom": 7000, "Anambra": 7000,
-  "Bauchi": 7000, "Bayelsa": 7000, "Benue": 7000, "Borno": 7000,
-  "Cross River": 7000, "Delta": 7000, "Ebonyi": 7000, "Edo": 7000,
-  "Ekiti": 7000, "Enugu": 7000, "FCT Abuja": 7000, "Gombe": 7000,
-  "Imo": 7000, "Jigawa": 7000, "Kaduna": 7000, "Kano": 7000,
-  "Katsina": 7000, "Kebbi": 7000, "Kogi": 7000, "Kwara": 7000,
-  "Lagos": 7000, "Nasarawa": 7000, "Niger": 7000, "Ogun": 7000,
-  "Ondo": 7000, "Osun": 7000, "Oyo": 7000, "Plateau": 7000,
-  "Rivers": 7000, "Sokoto": 7000, "Taraba": 7000, "Yobe": 7000,
-  "Zamfara": 7000,
+  "Abia": 5700, "Adamawa": 8100, "Akwa Ibom": 5700, "Anambra": 5700,
+  "Bauchi": 8100, "Bayelsa": 5700, "Benue": 8100, "Borno": 8100,
+  "Cross River": 5700, "Delta": 5700, "Ebonyi": 5700, "Edo": 5700,
+  "Ekiti": 6500, "Enugu": 5700, "FCT Abuja": 8100, "Gombe": 8100,
+  "Imo": 5700, "Jigawa": 8100, "Kaduna": 8100, "Kano": 8100,
+  "Katsina": 8100, "Kebbi": 8100, "Kogi": 8100, "Kwara": 8100,
+  "Lagos": 6500, "Nasarawa": 8100, "Niger": 8100, "Ogun": 6500,
+  "Ondo": 6500, "Osun": 6500, "Oyo": 6500, "Plateau": 8100,
+  "Rivers": 5700, "Sokoto": 8100, "Taraba": 8100, "Yobe": 8100,
+  "Zamfara": 8100,
 }
 
 // ─── Cart validation ─────────────────────────────────────────────────────────
