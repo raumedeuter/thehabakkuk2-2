@@ -1,36 +1,90 @@
-import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { ShoppingBag, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import products from "../data/products";
-import { useCart } from "../context/CartContext";
+import { useState, useEffect } from 'react'
+import { useParams, Link } from 'react-router-dom'
+import { ShoppingBag, ArrowLeft } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
+import { useCart } from '../context/CartContext'
 
 function ProductDetail() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const product = products.find((p) => p.id === parseInt(id));
-  const { addToCart } = useCart();
-  const [quantity, setQuantity] = useState(1);
-  const [added, setAdded] = useState(false);
-  const [orderType, setOrderType] = useState("standard");
-  const [selectedVariant, setSelectedVariant] = useState(
-    product
-      ? product.variants.find((v) => v.slug === product.defaultVariant)
-      : null,
-  );
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { addToCart } = useCart()
+  const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [quantity, setQuantity] = useState(1)
+  const [added, setAdded] = useState(false)
+  const [orderType, setOrderType] = useState('standard')
+  const [selectedVariant, setSelectedVariant] = useState(null)
+
+  useEffect(() => {
+    async function fetchProduct() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, variants(*)')
+        .eq('id', id)
+        .single()
+
+      if (error || !data) {
+        setLoading(false)
+        return
+      }
+
+      // Transform to match existing structure
+      const transformed = {
+        id: data.id,
+        name: data.name,
+        collection: data.collection_name,
+        collectionSlug: data.collection_slug,
+        description: data.description,
+        price: `₦${(data.price / 100).toLocaleString()}`,
+        size: data.size,
+        pages: data.pages,
+        defaultVariant: data.default_variant_slug,
+        variants: (data.variants || []).map(v => ({
+          color: v.color,
+          slug: v.slug,
+          image: v.image_url,
+          inStock: v.in_stock,
+        })),
+      }
+
+      setProduct(transformed)
+      setSelectedVariant(
+        transformed.variants.find(v => v.slug === transformed.defaultVariant)
+        || transformed.variants[0]
+      )
+      setLoading(false)
+    }
+
+    fetchProduct()
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="bg-brand-cream min-h-screen px-6 md:px-16 py-10 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 animate-pulse">
+          <div className="rounded-3xl bg-white h-64 md:h-96" />
+          <div className="flex flex-col gap-4 pt-4">
+            <div className="h-3 bg-white rounded w-1/4" />
+            <div className="h-8 bg-white rounded w-3/4" />
+            <div className="h-6 bg-white rounded w-1/4" />
+            <div className="h-24 bg-white rounded w-full" />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!product) {
     return (
       <div className="text-center py-24 px-6">
-        <h2 className="text-2xl font-bold text-brand-brown mb-4">
-          Product not found
-        </h2>
-        <Link to="/shop" className="text-brand-green hover:underline">
-          Back to Shop
-        </Link>
+        <h2 className="text-2xl font-bold text-brand-brown mb-4">Product not found</h2>
+        <Link to="/shop" className="text-brand-green hover:underline">Back to Shop</Link>
       </div>
-    );
+    )
   }
+
+  // ... rest of the component stays exactly the same
 
   const handleAddToCart = () => {
     if (!selectedVariant?.inStock) return;

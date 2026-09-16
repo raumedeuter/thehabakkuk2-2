@@ -1,12 +1,14 @@
-import { Link } from "react-router-dom";
-import products from "../data/products";
-import FloatingHearts from "../components/FloatingHearts";
-// import lifestyleShop2 from '../assets/images/lifestyle-shop.png'
-import lifestyleAbout from "../assets/images/lifestyle-about.png";
-// import collections from "../data/collections";
+import { Link } from 'react-router-dom'
+import { useProducts } from '../hooks/useProducts'
+import FloatingHearts from '../components/FloatingHearts'
+import lifestyleAbout from '../assets/images/lifestyle-about.png'
+// import lifestyleHero from '../assets/images/lifestyle-hero.png'
 
 function Home() {
-  const featured = products.slice(0, 3);
+  const { products } = useProducts()
+  const featured = products.slice(0, 3)
+
+  // ... rest stays the same
 
   return (
     <div>
