@@ -86,7 +86,7 @@ export default async function handler(req, res) {
         process.env.SUPABASE_SERVICE_ROLE_KEY,
       );
 
-      // Insert the order
+      // Insert the order record
       const { data: savedOrder, error: orderError } = await supabaseAdmin
         .from("orders")
         .insert({
@@ -97,7 +97,7 @@ export default async function handler(req, res) {
           delivery_state: deliveryState,
           delivery_option: orderDetails?.delivery_option || "",
           delivery_address: orderDetails?.customer_address || "",
-          delivery_fee: summary.deliveryFee * 100, // convert to kobo
+          delivery_fee: summary.deliveryFee * 100,
           products_total: summary.productsTotal * 100,
           customisation_total: summary.customisationTotal * 100,
           grand_total: summary.grandTotal * 100,
@@ -110,7 +110,7 @@ export default async function handler(req, res) {
       if (orderError) {
         console.error("Order save error:", orderError);
       } else {
-        // Insert order items
+        // Insert individual order items
         const orderItems = cart.map((item) => {
           const numericId = parseInt(item.id.toString().split("-")[0]);
           const basePrice = products[numericId];
@@ -138,12 +138,12 @@ export default async function handler(req, res) {
         if (itemsError) {
           console.error("Order items save error:", itemsError);
         } else {
-          console.log("Order saved successfully:", savedOrder.id);
+          console.log("Order saved to Supabase:", savedOrder.id);
         }
       }
     } catch (dbError) {
       console.error("Database error:", dbError);
-      // Never fail the payment response over a DB error
+      // Never block payment confirmation over a DB error
     }
 
     // ===== BUILD ORDER SUMMARY HTML =====

@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Plus, Trash2, ChevronRight, Check, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import products from "../data/products";
+import { useProducts } from '../hooks/useProducts'
 import fonts, { recommended, categories, fontsByCategory } from "../data/fonts";
 import custom1 from "../assets/images/custom-sample-1.png";
 import custom2 from "../assets/images/custom-sample-2.png";
 import custom3 from "../assets/images/custom-sample-3.png";
+
 
 const STEPS = ["Choose Journal", "Personalise", "Review Order", "Checkout"];
 
@@ -148,6 +149,7 @@ const EntryCard = ({
 
 // ===== MAIN COMPONENT =====
 function CustomOrder() {
+  const { products } = useProducts()
   const location = useLocation();
   const navigate = useNavigate();
   const { addToCart } = useCart();
