@@ -23,7 +23,7 @@ const deliveryData = {
   "Kebbi": 8100,
   "Kogi": 8100,
   "Kwara": 8100,
-  "Lagos": 7000,
+  "Lagos": 6500,
   "Nasarawa": 8100,
   "Niger": 8100,
   "Ogun": 6500,

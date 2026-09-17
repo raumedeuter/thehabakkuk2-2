@@ -2,12 +2,11 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Plus, Trash2, ChevronRight, Check, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { useProducts } from '../hooks/useProducts'
+import { useProducts } from "../hooks/useProducts";
 import fonts, { recommended, categories, fontsByCategory } from "../data/fonts";
 import custom1 from "../assets/images/custom-sample-1.png";
 import custom2 from "../assets/images/custom-sample-2.png";
 import custom3 from "../assets/images/custom-sample-3.png";
-
 
 const STEPS = ["Choose Journal", "Personalise", "Review Order", "Checkout"];
 
@@ -149,7 +148,7 @@ const EntryCard = ({
 
 // ===== MAIN COMPONENT =====
 function CustomOrder() {
-  const { products } = useProducts()
+  const { products } = useProducts();
   const location = useLocation();
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -159,6 +158,7 @@ function CustomOrder() {
   const buildEntryFromProduct = (p) => ({
     entryId: `${p.id}-${Date.now()}`,
     productId: p.id,
+    numericId: p.numericId,
     name: p.name,
     collection: p.collection,
     color: p.color,
@@ -219,6 +219,7 @@ function CustomOrder() {
     const newEntry = {
       entryId: `${selectorProduct.id}-${Date.now()}`,
       productId: selectorProduct.id,
+      numericId: selectorProduct.numericId,
       name: selectorProduct.name,
       collection: selectorProduct.collection,
       color: selectorVariant.color,
@@ -258,10 +259,12 @@ function CustomOrder() {
       addToCart(
         {
           id: `${entry.productId}-${entry.colorSlug}-custom-${entry.entryId}`,
+          numericId: entry.numericId,
           name: `${entry.name} — ${entry.color}`,
           price: entry.price,
           image: entry.image,
           collection: entry.collection,
+          color: entry.color,
           isCustomised: true,
           customisation: {
             font: entry.font,

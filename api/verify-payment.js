@@ -78,6 +78,9 @@ export default async function handler(req, res) {
       });
     }
 
+    // ===== BUILD ORDER SUMMARY (declared before Supabase block so it's available) =====
+    const summary = buildOrderSummary(cart, deliveryState);
+
     // ===== SAVE ORDER TO SUPABASE =====
     try {
       const { createClient } = await import("@supabase/supabase-js");
@@ -110,9 +113,9 @@ export default async function handler(req, res) {
       if (orderError) {
         console.error("Order save error:", orderError);
       } else {
-        // Insert individual order items
+        // Insert individual order items — item.id is already the numericId sent from frontend
         const orderItems = cart.map((item) => {
-          const numericId = parseInt(item.id.toString().split("-")[0]);
+          const numericId = item.id;
           const basePrice = products[numericId];
           const customFee = item.isCustomised ? CUSTOMISATION_FEE : 0;
           const subtotal = (basePrice + customFee) * item.quantity;
@@ -145,11 +148,6 @@ export default async function handler(req, res) {
       console.error("Database error:", dbError);
       // Never block payment confirmation over a DB error
     }
-
-    // ===== BUILD ORDER SUMMARY HTML =====
-    // Generated server-side from the same pricing constants used above.
-    // Totals in both emails are guaranteed to match what Paystack charged.
-    const summary = buildOrderSummary(cart, deliveryState);
 
     // ===== BUILD EMAIL PARAMS =====
     // Shared fields sent to both seller and customer templates

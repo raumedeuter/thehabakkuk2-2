@@ -116,7 +116,7 @@ function Checkout() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           cart: cart.map((item) => ({
-            id: parseInt(item.id.toString().split("-")[0]), // extracts just the number
+            id: item.numericId || parseInt(item.id.toString().split("-")[0]),
             name: item.name,
             color: item.color || item.name.split("—")[1]?.trim() || "",
             quantity: item.quantity,
@@ -157,8 +157,11 @@ function Checkout() {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 reference: transaction.reference,
+                // In BOTH the initialize and verify calls:
                 cart: cart.map((item) => ({
-                  id: parseInt(item.id.toString().split("-")[0]), // extracts just the number
+                  id:
+                    item.numericId ||
+                    parseInt(item.id.toString().split("-")[0]),
                   name: item.name,
                   color: item.color || item.name.split("—")[1]?.trim() || "",
                   quantity: item.quantity,

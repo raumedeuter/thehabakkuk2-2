@@ -1,37 +1,38 @@
-import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { ShoppingBag, ArrowLeft } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
-import { useCart } from '../context/CartContext'
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { ShoppingBag, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import { useCart } from "../context/CartContext";
 
 function ProductDetail() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const { addToCart } = useCart()
-  const [product, setProduct] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [quantity, setQuantity] = useState(1)
-  const [added, setAdded] = useState(false)
-  const [orderType, setOrderType] = useState('standard')
-  const [selectedVariant, setSelectedVariant] = useState(null)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
+  const [added, setAdded] = useState(false);
+  const [orderType, setOrderType] = useState("standard");
+  const [selectedVariant, setSelectedVariant] = useState(null);
 
   useEffect(() => {
     async function fetchProduct() {
       const { data, error } = await supabase
-        .from('products')
-        .select('*, variants(*)')
-        .eq('id', id)
-        .single()
+        .from("products")
+        .select("*, variants(*)")
+        .eq("id", id)
+        .single();
 
       if (error || !data) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
       // Transform to match existing structure
       const transformed = {
         id: data.id,
+        numericId: data.numeric_id,
         name: data.name,
         collection: data.collection_name,
         collectionSlug: data.collection_slug,
@@ -40,24 +41,25 @@ function ProductDetail() {
         size: data.size,
         pages: data.pages,
         defaultVariant: data.default_variant_slug,
-        variants: (data.variants || []).map(v => ({
+        variants: (data.variants || []).map((v) => ({
           color: v.color,
           slug: v.slug,
           image: v.image_url,
           inStock: v.in_stock,
         })),
-      }
+      };
 
-      setProduct(transformed)
+      setProduct(transformed);
       setSelectedVariant(
-        transformed.variants.find(v => v.slug === transformed.defaultVariant)
-        || transformed.variants[0]
-      )
-      setLoading(false)
+        transformed.variants.find(
+          (v) => v.slug === transformed.defaultVariant,
+        ) || transformed.variants[0],
+      );
+      setLoading(false);
     }
 
-    fetchProduct()
-  }, [id])
+    fetchProduct();
+  }, [id]);
 
   if (loading) {
     return (
@@ -72,16 +74,20 @@ function ProductDetail() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (!product) {
     return (
       <div className="text-center py-24 px-6">
-        <h2 className="text-2xl font-bold text-brand-brown mb-4">Product not found</h2>
-        <Link to="/shop" className="text-brand-green hover:underline">Back to Shop</Link>
+        <h2 className="text-2xl font-bold text-brand-brown mb-4">
+          Product not found
+        </h2>
+        <Link to="/shop" className="text-brand-green hover:underline">
+          Back to Shop
+        </Link>
       </div>
-    )
+    );
   }
 
   // ... rest of the component stays exactly the same
@@ -95,6 +101,7 @@ function ProductDetail() {
         state: {
           product: {
             id: product.id,
+            numericId: product.numericId,
             name: product.name,
             collection: product.collection,
             price: product.price,
@@ -114,10 +121,12 @@ function ProductDetail() {
     addToCart(
       {
         id: `${product.id}-${selectedVariant.slug}`,
+        numericId: product.numericId, // add this
         name: `${product.name} — ${selectedVariant.color}`,
         price: product.price,
         image: selectedVariant.image,
         collection: product.collection,
+        color: selectedVariant.color,
         quantity,
       },
       quantity,
