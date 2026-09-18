@@ -50,7 +50,7 @@ function Cart() {
               {/* ── Zone A: Product row ── */}
               <div className="flex gap-3 p-4 md:p-5">
                 {/* Image — fixed size, never shrinks */}
-                <div className="flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-brand-cream">
+                <div className="flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-brand-white">
                   <img
                     src={item.image}
                     alt={item.name}

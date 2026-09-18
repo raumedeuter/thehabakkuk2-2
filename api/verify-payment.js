@@ -2,7 +2,6 @@ import {
   validateCart,
   calculateTotal,
   buildOrderSummary,
-  products,
   CUSTOMISATION_FEE,
 } from "./_lib/pricing.js";
 
@@ -20,7 +19,7 @@ export default async function handler(req, res) {
     }
 
     // ===== VALIDATE CART =====
-    if (!validateCart(cart, res)) return;
+    if (!await validateCart(cart, res)) return;
 
     // ===== VALIDATE DELIVERY STATE =====
     if (!deliveryState || !deliveryState.trim()) {
@@ -28,7 +27,7 @@ export default async function handler(req, res) {
     }
 
     // ===== CALCULATE EXPECTED AMOUNT =====
-    const expectedAmount = calculateTotal(cart, deliveryState);
+    const expectedAmount = await calculateTotal(cart, deliveryState);
 
     // ===== VERIFY WITH PAYSTACK =====
     const verifyResponse = await fetch(
@@ -78,8 +77,8 @@ export default async function handler(req, res) {
       });
     }
 
-    // ===== BUILD ORDER SUMMARY (declared before Supabase block so it's available) =====
-    const summary = buildOrderSummary(cart, deliveryState);
+    // ===== BUILD ORDER SUMMARY =====
+    const summary = await buildOrderSummary(cart, deliveryState);
 
     // ===== SAVE ORDER TO SUPABASE =====
     try {
@@ -113,19 +112,18 @@ export default async function handler(req, res) {
       if (orderError) {
         console.error("Order save error:", orderError);
       } else {
-        // Insert individual order items — item.id is already the numericId sent from frontend
+        // Build order items using prices from the already-fetched summary
         const orderItems = cart.map((item) => {
-          const numericId = item.id;
-          const basePrice = products[numericId];
+          const unitPrice = summary.priceMap[item.id];
           const customFee = item.isCustomised ? CUSTOMISATION_FEE : 0;
-          const subtotal = (basePrice + customFee) * item.quantity;
+          const subtotal = (unitPrice + customFee) * item.quantity;
 
           return {
             order_id: savedOrder.id,
             product_name: item.name,
             variant_color: item.color || "",
             quantity: item.quantity,
-            unit_price: basePrice * 100,
+            unit_price: unitPrice * 100,
             is_customised: item.isCustomised || false,
             customisation_font: item.customisation?.font || null,
             customisation_message: item.customisation?.message || null,
@@ -150,7 +148,6 @@ export default async function handler(req, res) {
     }
 
     // ===== BUILD EMAIL PARAMS =====
-    // Shared fields sent to both seller and customer templates
     const sharedParams = {
       customer_name: orderDetails?.customer_name || "",
       customer_email: orderDetails?.customer_email || "",
@@ -163,9 +160,7 @@ export default async function handler(req, res) {
       payment_status: "Paid via Paystack",
       payment_reference: reference,
       email_subject: `🟢 New Paid Order ${orderDetails?.customer_name || "Customer"}`,
-      // Dynamic order summary HTML — replaces static order_items table
       order_summary_html: summary.html,
-      // Legacy fields kept for backward compatibility with existing template variables
       message: "",
       order_items: "",
     };
@@ -197,12 +192,10 @@ export default async function handler(req, res) {
 
     try {
       await Promise.all([
-        // Seller email — full production order sheet
         sendEmail(process.env.EMAILJS_ORDER_TEMPLATE_ID, {
           ...sharedParams,
           email_subject: `New Order from ${orderDetails?.customer_name || "Customer"}`,
         }),
-        // Customer email — clean order confirmation
         sendEmail(process.env.EMAILJS_CUSTOMER_TEMPLATE_ID, {
           ...sharedParams,
           email_subject: `Order Confirmed — Thank You ${orderDetails?.customer_name || ""}!`,
@@ -210,7 +203,6 @@ export default async function handler(req, res) {
       ]);
     } catch (emailError) {
       console.error("Email sending failed:", emailError.message);
-      // Payment already verified — do not fail the request over email
     }
 
     return res.status(200).json({
