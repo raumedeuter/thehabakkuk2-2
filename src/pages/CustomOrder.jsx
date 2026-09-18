@@ -5,8 +5,8 @@ import { useCart } from "../context/CartContext";
 import { useProducts } from "../hooks/useProducts";
 import fonts, { recommended, categories, fontsByCategory } from "../data/fonts";
 import custom1 from "../assets/images/custom-sample-1.png";
-import custom2 from "../assets/images/custom-sample-2.png";
-import custom3 from "../assets/images/custom-sample-3.png";
+import custom2 from "../assets/images/custom-journal-2.webp";
+import custom3 from "../assets/images/custom-journal-3.webp";
 
 const STEPS = ["Choose Journal", "Personalise", "Review Order", "Checkout"];
 
