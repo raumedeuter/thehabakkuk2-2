@@ -2,6 +2,18 @@ import { createClient } from "@supabase/supabase-js";
 
 export const CUSTOMISATION_FEE = 1000;
 
+// ===== HTML ESCAPE =====
+// Prevents user-controlled strings from injecting markup into emails
+function escHtml(str) {
+  if (typeof str !== "string") return "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function getSupabase() {
   return createClient(
     process.env.VITE_SUPABASE_URL,
@@ -42,11 +54,44 @@ async function getDeliveryFee(state) {
   return data.fee_kobo / 100; // return in Naira
 }
 
+// Max quantity per line item — reasonable H22 business limit
+const MAX_QUANTITY = 50;
+
 // ===== VALIDATE CART =====
 export async function validateCart(cart, res) {
   if (!Array.isArray(cart) || cart.length === 0) {
     res.status(400).json({ error: "Cart is empty or invalid" });
     return false;
+  }
+
+  // Sanity cap — never accept absurdly large carts
+  if (cart.length > 20) {
+    res.status(400).json({ error: "Cart contains too many items" });
+    return false;
+  }
+
+  for (const item of cart) {
+    // id must be a positive integer (numeric_id)
+    if (!Number.isInteger(item.id) || item.id < 1) {
+      res.status(400).json({ error: "Invalid product id in cart" });
+      return false;
+    }
+    // quantity must be a positive integer within bounds
+    if (
+      !Number.isInteger(item.quantity) ||
+      item.quantity < 1 ||
+      item.quantity > MAX_QUANTITY
+    ) {
+      res.status(400).json({
+        error: `Quantity must be between 1 and ${MAX_QUANTITY}`,
+      });
+      return false;
+    }
+    // isCustomised must be a boolean if present
+    if (item.isCustomised !== undefined && typeof item.isCustomised !== "boolean") {
+      res.status(400).json({ error: "Invalid customisation flag" });
+      return false;
+    }
   }
 
   const numericIds = cart.map((item) => item.id);
@@ -60,11 +105,7 @@ export async function validateCart(cart, res) {
 
   for (const item of cart) {
     if (priceMap[item.id] === undefined) {
-      res.status(400).json({ error: `Invalid product id: ${item.id}` });
-      return false;
-    }
-    if (!Number.isInteger(item.quantity) || item.quantity < 1) {
-      res.status(400).json({ error: `Invalid quantity for product ${item.id}` });
+      res.status(400).json({ error: "One or more products could not be found" });
       return false;
     }
   }
@@ -107,8 +148,12 @@ export async function buildOrderSummary(cart, deliveryState) {
     productsTotal += basePrice * item.quantity;
     customisationTotal += customFee * item.quantity;
 
+    // Escape all user-controlled strings before HTML interpolation
+    const safeName = escHtml(item.name);
+    const safeColor = item.color ? ` — ${escHtml(item.color)}` : "";
+
     return `<tr>
-      <td style="padding:8px;border:1px solid #e5e7eb;">${item.name}${item.color ? ` — ${item.color}` : ""}</td>
+      <td style="padding:8px;border:1px solid #e5e7eb;">${safeName}${safeColor}</td>
       <td style="padding:8px;border:1px solid #e5e7eb;text-align:center;">${item.quantity}</td>
       <td style="padding:8px;border:1px solid #e5e7eb;">${item.isCustomised ? "Yes" : "No"}</td>
       <td style="padding:8px;border:1px solid #e5e7eb;text-align:right;">₦${lineTotal.toLocaleString()}</td>

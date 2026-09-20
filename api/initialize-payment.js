@@ -57,6 +57,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Initialize payment error:', error)
-    return res.status(500).json({ error: error.message || 'Something went wrong initializing payment' })
+    return res.status(500).json({ error: 'Something went wrong initializing payment' })
   }
 }

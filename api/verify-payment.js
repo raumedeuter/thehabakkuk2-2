@@ -88,17 +88,41 @@ export default async function handler(req, res) {
         process.env.SUPABASE_SERVICE_ROLE_KEY,
       );
 
+      // ── Idempotency check: reject duplicate references ──
+      const { data: existing } = await supabaseAdmin
+        .from("orders")
+        .select("id")
+        .eq("paystack_reference", reference)
+        .maybeSingle();
+
+      if (existing) {
+        return res.status(200).json({
+          verified: true,
+          amountPaid,
+          customerEmail: data.data.customer.email,
+          paidAt: data.data.paid_at,
+          duplicate: true,
+        });
+      }
+
+      // Sanitise customer-supplied strings
+      const safeName    = String(orderDetails?.customer_name  || "").slice(0, 200).trim();
+      const safeEmail   = String(orderDetails?.customer_email || "").slice(0, 254).trim();
+      const safePhone   = String(orderDetails?.customer_phone || "").slice(0, 20).trim();
+      const safeAddress = String(orderDetails?.customer_address || "").slice(0, 500).trim();
+      const safeDeliveryOption = String(orderDetails?.delivery_option || "").slice(0, 50).trim();
+
       // Insert the order record
       const { data: savedOrder, error: orderError } = await supabaseAdmin
         .from("orders")
         .insert({
           paystack_reference: reference,
-          customer_name: orderDetails?.customer_name || "",
-          customer_email: orderDetails?.customer_email || "",
-          customer_phone: orderDetails?.customer_phone || "",
+          customer_name: safeName,
+          customer_email: safeEmail,
+          customer_phone: safePhone,
           delivery_state: deliveryState,
-          delivery_option: orderDetails?.delivery_option || "",
-          delivery_address: orderDetails?.customer_address || "",
+          delivery_option: safeDeliveryOption,
+          delivery_address: safeAddress,
           delivery_fee: summary.deliveryFee * 100,
           products_total: summary.productsTotal * 100,
           customisation_total: summary.customisationTotal * 100,
@@ -110,7 +134,17 @@ export default async function handler(req, res) {
         .single();
 
       if (orderError) {
-        console.error("Order save error:", orderError);
+        // Unique constraint violation = concurrent duplicate, treat as safe
+        if (orderError.code === "23505") {
+          return res.status(200).json({
+            verified: true,
+            amountPaid,
+            customerEmail: data.data.customer.email,
+            paidAt: data.data.paid_at,
+            duplicate: true,
+          });
+        }
+        console.error("Order save error:", orderError.code, orderError.message);
       } else {
         // Build order items using prices from the already-fetched summary
         const orderItems = cart.map((item) => {
@@ -148,13 +182,20 @@ export default async function handler(req, res) {
     }
 
     // ===== BUILD EMAIL PARAMS =====
+    const safeName2    = String(orderDetails?.customer_name  || "").slice(0, 200).trim();
+    const safeEmail2   = String(orderDetails?.customer_email || "").slice(0, 254).trim();
+    const safePhone2   = String(orderDetails?.customer_phone || "").slice(0, 20).trim();
+    const safeAddress2 = String(orderDetails?.customer_address || "").slice(0, 500).trim();
+    const safeDelivOpt = String(orderDetails?.delivery_option || "").slice(0, 50).trim();
+    const safeState    = String(orderDetails?.customer_state || deliveryState).slice(0, 100).trim();
+
     const sharedParams = {
-      customer_name: orderDetails?.customer_name || "",
-      customer_email: orderDetails?.customer_email || "",
-      customer_phone: orderDetails?.customer_phone || "",
-      customer_state: orderDetails?.customer_state || deliveryState,
-      delivery_option: orderDetails?.delivery_option || "",
-      customer_address: orderDetails?.customer_address || "",
+      customer_name: safeName2,
+      customer_email: safeEmail2,
+      customer_phone: safePhone2,
+      customer_state: safeState,
+      delivery_option: safeDelivOpt,
+      customer_address: safeAddress2,
       delivery_fee: `₦${summary.deliveryFee.toLocaleString()}`,
       order_total: `₦${summary.grandTotal.toLocaleString()}`,
       payment_status: "Paid via Paystack",
