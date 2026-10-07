@@ -106,7 +106,14 @@ function Orders() {
                         <span className="font-medium">{item.product_name}</span>
                         {item.variant_color && <span className="opacity-50"> — {item.variant_color}</span>}
                         {item.is_customised && (
-                          <span className="ml-2 text-brand-gold text-xs font-semibold">✦ Personalised</span>
+                          <>
+                            <span className="ml-2 text-brand-gold text-xs font-semibold">✦ Personalised</span>
+                            <div className="mt-1 text-xs text-brand-brown opacity-60">
+                              <span>Font: <strong className="opacity-100">{item.customisation_font || '—'}</strong></span>
+                              {' · '}
+                              <span>Message: <em>{item.customisation_message || '—'}</em></span>
+                            </div>
+                          </>
                         )}
                         <span className="opacity-50"> × {item.quantity}</span>
                       </div>
@@ -136,6 +143,13 @@ function Orders() {
                   </div>
                 </div>
 
+                {order.order_note && (
+                  <div className="mt-4 bg-brand-cream rounded-xl px-4 py-3">
+                    <p className="text-brand-gold text-xs font-semibold uppercase tracking-widest mb-1">Order Note</p>
+                    <p className="text-brand-brown text-sm">{order.order_note}</p>
+                  </div>
+                )}
+
                 <p className="text-brand-brown opacity-30 text-xs mt-4">
                   Ref: {order.paystack_reference}
                 </p>
@@ -148,4 +162,4 @@ function Orders() {
   )
 }
 
-export default Orders
+export default Orders 

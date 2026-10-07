@@ -107,6 +107,7 @@ function Checkout() {
       order_total: `₦${orderTotal.toLocaleString()}`,
       payment_status: "Paid via Paystack",
       message: "",
+      order_note: formData.note.trim(),
     };
   };
 

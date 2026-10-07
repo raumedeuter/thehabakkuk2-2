@@ -152,10 +152,18 @@ export async function buildOrderSummary(cart, deliveryState) {
     const safeName = escHtml(item.name);
     const safeColor = item.color ? ` — ${escHtml(item.color)}` : "";
 
+    // Build customisation details cell
+    let customisationCell = "No";
+    if (item.isCustomised) {
+      const safeFont = item.customisation?.font ? escHtml(item.customisation.font) : "—";
+      const safeMessage = item.customisation?.message ? escHtml(item.customisation.message) : "—";
+      customisationCell = `Yes<br><span style="font-size:12px;color:#555;">Font: <strong>${safeFont}</strong><br>Message: <em>${safeMessage}</em></span>`;
+    }
+
     return `<tr>
       <td style="padding:8px;border:1px solid #e5e7eb;">${safeName}${safeColor}</td>
       <td style="padding:8px;border:1px solid #e5e7eb;text-align:center;">${item.quantity}</td>
-      <td style="padding:8px;border:1px solid #e5e7eb;">${item.isCustomised ? "Yes" : "No"}</td>
+      <td style="padding:8px;border:1px solid #e5e7eb;">${customisationCell}</td>
       <td style="padding:8px;border:1px solid #e5e7eb;text-align:right;">₦${lineTotal.toLocaleString()}</td>
     </tr>`;
   });

@@ -89,6 +89,8 @@ export default async function handler(req, res) {
       );
 
       // ── Idempotency check: reject duplicate references ──
+      // The UNIQUE constraint on paystack_reference is the primary guard,
+      // but this check returns a clean 409 instead of a raw DB error.
       const { data: existing } = await supabaseAdmin
         .from("orders")
         .select("id")
@@ -96,6 +98,7 @@ export default async function handler(req, res) {
         .maybeSingle();
 
       if (existing) {
+        // Reference already processed — return success without creating a duplicate
         return res.status(200).json({
           verified: true,
           amountPaid,
@@ -105,12 +108,14 @@ export default async function handler(req, res) {
         });
       }
 
-      // Sanitise customer-supplied strings
+      // Sanitise customer-supplied strings saved to the database
+      // (these come from the browser; trim and enforce max length)
       const safeName    = String(orderDetails?.customer_name  || "").slice(0, 200).trim();
       const safeEmail   = String(orderDetails?.customer_email || "").slice(0, 254).trim();
       const safePhone   = String(orderDetails?.customer_phone || "").slice(0, 20).trim();
       const safeAddress = String(orderDetails?.customer_address || "").slice(0, 500).trim();
       const safeDeliveryOption = String(orderDetails?.delivery_option || "").slice(0, 50).trim();
+      const safeNote = String(orderDetails?.order_note || "").slice(0, 1000).trim();
 
       // Insert the order record
       const { data: savedOrder, error: orderError } = await supabaseAdmin
@@ -123,6 +128,7 @@ export default async function handler(req, res) {
           delivery_state: deliveryState,
           delivery_option: safeDeliveryOption,
           delivery_address: safeAddress,
+          order_note: safeNote || null,
           delivery_fee: summary.deliveryFee * 100,
           products_total: summary.productsTotal * 100,
           customisation_total: summary.customisationTotal * 100,
@@ -134,7 +140,8 @@ export default async function handler(req, res) {
         .single();
 
       if (orderError) {
-        // Unique constraint violation = concurrent duplicate, treat as safe
+        // Unique constraint violation means the reference was just processed
+        // in a concurrent request — safe to treat as duplicate
         if (orderError.code === "23505") {
           return res.status(200).json({
             verified: true,
@@ -182,12 +189,15 @@ export default async function handler(req, res) {
     }
 
     // ===== BUILD EMAIL PARAMS =====
+    // Re-use the already-sanitised strings from the DB insert above.
+    // If the order save failed (savedOrder undefined), fall back to sanitised strings.
     const safeName2    = String(orderDetails?.customer_name  || "").slice(0, 200).trim();
     const safeEmail2   = String(orderDetails?.customer_email || "").slice(0, 254).trim();
     const safePhone2   = String(orderDetails?.customer_phone || "").slice(0, 20).trim();
     const safeAddress2 = String(orderDetails?.customer_address || "").slice(0, 500).trim();
     const safeDelivOpt = String(orderDetails?.delivery_option || "").slice(0, 50).trim();
     const safeState    = String(orderDetails?.customer_state || deliveryState).slice(0, 100).trim();
+    const safeNote2    = String(orderDetails?.order_note || "").slice(0, 1000).trim();
 
     const sharedParams = {
       customer_name: safeName2,
@@ -204,6 +214,7 @@ export default async function handler(req, res) {
       order_summary_html: summary.html,
       message: "",
       order_items: "",
+      order_note: safeNote2 || "—",
     };
 
     // ===== SEND EMAILS =====
