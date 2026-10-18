@@ -7,7 +7,7 @@ import Spinner from "../components/Spinner";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
+  import.meta.env.VITE_SUPABASE_ANON_KEY,
 );
 
 function Checkout() {
@@ -114,7 +114,12 @@ function Checkout() {
   const handlePayment = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.phone || !formData.state) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.state
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -149,7 +154,9 @@ function Checkout() {
       const initData = await initResponse.json();
 
       if (!initResponse.ok) {
-        alert(initData.error || "Could not initialize payment. Please try again.");
+        alert(
+          initData.error || "Could not initialize payment. Please try again.",
+        );
         setLoading(false);
         return;
       }
@@ -172,7 +179,9 @@ function Checkout() {
               body: JSON.stringify({
                 reference: transaction.reference,
                 cart: cart.map((item) => ({
-                  id: item.numericId || parseInt(item.id.toString().split("-")[0]),
+                  id:
+                    item.numericId ||
+                    parseInt(item.id.toString().split("-")[0]),
                   name: item.name,
                   color: item.color || item.name.split("—")[1]?.trim() || "",
                   quantity: item.quantity,
@@ -187,7 +196,10 @@ function Checkout() {
             const verifyData = await verifyResponse.json();
 
             if (!verifyResponse.ok) {
-              alert(verifyData.error || "Payment verification failed. Please contact us.");
+              alert(
+                verifyData.error ||
+                  "Payment verification failed. Please contact us.",
+              );
               setLoading(false);
               return;
             }
@@ -196,7 +208,9 @@ function Checkout() {
             navigate("/order-success", { state: { name: formData.name } });
           } catch (error) {
             console.error("Verification error:", error);
-            alert("Something went wrong verifying your payment. Please contact us.");
+            alert(
+              "Something went wrong verifying your payment. Please contact us.",
+            );
             setLoading(false);
           }
         },
@@ -316,9 +330,9 @@ function Checkout() {
                 className="w-full border border-brand-gold border-opacity-20 rounded-xl px-4 py-3 text-brand-brown bg-brand-cream focus:outline-none focus:border-brand-gold text-sm md:text-base"
               >
                 <option value="">-- Select your state --</option>
-                {Object.entries(deliveryFees).map(([state, fee]) => (
+                {Object.entries(deliveryFees).map(([state]) => (
                   <option key={state} value={state}>
-                    {state} — ₦{fee.toLocaleString()} delivery
+                    {state}
                   </option>
                 ))}
               </select>
