@@ -89,8 +89,7 @@ function Checkout() {
         formData.deliveryOption === "pickup"
           ? "Office Pickup"
           : "Home Delivery",
-      customer_address:
-        formData.deliveryOption === "home" ? formData.address : "Office Pickup",
+      customer_address: formData.address || "—",
       order_items: orderItemsHTML,
       items: cart.map((item) => ({
         name: item.name,
@@ -124,10 +123,10 @@ function Checkout() {
       return;
     }
 
-    if (formData.deliveryOption === "home" && !formData.address) {
-      alert("Please enter your home delivery address.");
-      return;
-    }
+    // if (formData.deliveryOption === "home" && !formData.address) {
+    //   alert("Please enter your home delivery address.");
+    //   return;
+    // }
 
     if (!validate()) return;
 
@@ -355,10 +354,11 @@ function Checkout() {
                     className="accent-brand-green"
                   />
                   <span className="text-brand-brown text-sm md:text-base">
-                    Pick up at logistics office in {formData.state}
+                    Pickup — we'll deliver to the nearest pickup station to you in{" "}
+                    {formData.state}
                   </span>
                 </label>
-                <label className="flex items-center gap-3 cursor-pointer">
+                {/* <label className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="radio"
                     name="deliveryOption"
@@ -370,12 +370,12 @@ function Checkout() {
                   <span className="text-brand-brown text-sm md:text-base">
                     Home delivery
                   </span>
-                </label>
+                </label> */}
               </div>
             </div>
           )}
 
-          {formData.deliveryOption === "home" && formData.state && (
+          {formData.state && (
             <div className="mb-5 md:mb-6">
               <label className="block text-brand-brown font-semibold mb-2 text-sm md:text-base">
                 Home Address
